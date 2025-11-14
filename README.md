@@ -2,6 +2,11 @@
 `Gemini`を利用したテキストと画像を通じたやり取りが行えるチャットボット機能<br>
 [詳細なプロンプト設定は`src/constance/prompt.ts`に記載](/src/constance/prompt.ts)しています。
 
+> [!NOTE]
+> - 画像でのやり取りが必要のないチャットボットで良い場合<br>
+> 現状の実装でも問題ないですが`src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び調整することでテキスト専用チャットボットになります<br>
+> この際、不要となるファイルアップロードコンポーネント`FileUploader`や関連箇所、関連State, 関連する型の読み込みなどを削除する必要があります。
+
 ## 技術構成
 - @eslint/js@9.39.1
 - @google/generative-ai@0.24.1
