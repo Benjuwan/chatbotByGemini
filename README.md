@@ -32,4 +32,3 @@ VITE_GEMINI_API_KEY = GeminiのAPIキー
 
 - ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
 - ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
-# chatbotByGemini
