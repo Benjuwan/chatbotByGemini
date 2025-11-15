@@ -4,9 +4,9 @@
 
 > [!NOTE]
 > - **画像やPDFファイルを通じたやり取りが必要ない場合**<br>
-> 現状の実装（[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)）でも問題ないですが`src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び調整することでテキスト専用チャットボットになります<br>
-> この際、不要となるファイルアップロードコンポーネント`FileUploader`や関連箇所、関連State, 関連する型の読み込みなどを削除する必要があります。
-> ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図がある。
+> 現状の実装（[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)）でも問題ないですが`src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び調整することでテキスト専用チャットボットになります。<br>
+> この際、不要となるファイルアップロードコンポーネント`FileUploader`や関連箇所、関連State, 関連する型の読み込みなどを削除する必要があります。<br>
+> ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成
 - @eslint/js@9.39.1
@@ -30,11 +30,12 @@
 
 ## 必要な設定
 ### `.env`ファイルを用意
-※**GeminiのAPIキーが必要**となります
+※使用・試用には**GeminiのAPIキーが必要**となります
 
 ```bash
 VITE_GEMINI_API_KEY = GeminiのAPIキー
 ```
 
-- ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
-- ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
+> [!IMPORTANT]
+> - ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
+> - ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
