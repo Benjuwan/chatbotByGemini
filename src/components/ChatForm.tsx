@@ -19,11 +19,11 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
 
     // AI解析用に調整したファイル情報
     const getAIReadyData: getAIReadyDataType[] = useMemo(() => {
-        return filePreviews.map(p => ({
-            name: p.file.name,
-            type: p.file.type,
-            size: p.file.size,
-            base64Data: p.preview ? p.preview.split(',')[1] : null,
+        return filePreviews.map(fileItem => ({
+            name: fileItem.file.name,
+            type: fileItem.file.type,
+            size: fileItem.file.size,
+            base64Data: fileItem.preview ? fileItem.preview.split(',')[1] : null,
         }));
     }, [filePreviews]);
 

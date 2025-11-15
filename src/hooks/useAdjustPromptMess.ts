@@ -13,7 +13,7 @@ export const useAdjustPromptMess = () => {
         const chainMessage: string[] = Object.values(chatHistory).map((chat, i) => `回答番号：${i + 1} | ${chat.content}\n`);
 
         const thePromtMessage = `
-        はじめに、以下の「生成ガイド」を読み込んでください。
+        はじめに、以下【生成ガイド】を読み込んでください。
 
         ---
 
@@ -21,7 +21,15 @@ export const useAdjustPromptMess = () => {
         
         ---
 
-        ${chatHistory.length > 0 ? `次に、これまでのユーザーとのやり取りは【${chainMessage}】という内容です。これを踏まえた上で「新たなユーザーの入力内容である【${input}】」に回答してください` : input}`;
+        ${chatHistory.length > 0 ? `
+            次に、これまでのユーザーとのやり取りは以下内容となります。
+            ---
+
+            ${chainMessage}
+
+            ---
+            これまでのやり取りを踏まえた上で、ユーザーの新たな入力内容である【${input}】に回答してください。
+            ` : input}`;
         console.log(thePromtMessage);
 
         /* `src/hooks/useGenerateChat_OnlyTxt.ts`（AIとテキストのみのやり取り機能）を利用するルート */

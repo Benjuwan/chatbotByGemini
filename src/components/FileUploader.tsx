@@ -26,11 +26,28 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
 
     // `FileReader`によるアップロード画像の描画処理
     const renderPreview = async (file: File): Promise<filePreviewType> => {
+        const reader = new FileReader();
+
+        const isPdfFile: boolean = file.type.split('/').at(-1) === 'pdf';
+        if (isPdfFile) {
+            return new Promise((resolve) => {
+                reader.onload = () => {
+                    if (reader.result && typeof reader.result === 'string') {
+                        const base64 = reader.result;
+                        resolve({
+                            file: file,
+                            preview: base64,
+                        });
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         return new Promise((resolve) => {
-            const reader = new FileReader();
             reader.onload = (e) => {
                 resolve({
-                    file,
+                    file: file,
                     preview: e.target?.result as string,
                 });
             };
@@ -64,6 +81,9 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
         }
     };
 
+    // JSXの描画処理内で、アップロードしたファイルがpdfファイルかどうかをチェックする関数
+    const checkPdfFile = (fileItem: filePreviewType): boolean => fileItem.file.type.split('/').at(-1) === 'pdf';
+
     useEffect(() => {
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -71,30 +91,35 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
     }, [loading]);
 
     return (
-        <div>
+        <>
             <input
                 type="file"
                 ref={fileInputRef}
-                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml,application/pdf"
                 onChange={handleFileChange}
                 disabled={loading}
                 multiple
             />
             {filePreviews.length > 0 &&
                 <div className={mainStyle.fileUploaderWrapper}>
-                    {filePreviews.map((preview, index) => (
-                        <figure key={index}>
-                            <img src={preview.preview} alt={preview.file.name} />
-                            <p>{preview.file.name}（{(preview.file.size / 1024).toFixed(2)} KB）</p>
+                    {filePreviews.map((fileItem, index) => (
+                        <div key={index}>
+                            {checkPdfFile(fileItem) ?
+                                <p>{fileItem.file.name}（{(fileItem.file.size / 1024).toFixed(2)} KB）</p> :
+                                <figure>
+                                    <img src={fileItem.preview} alt={fileItem.file.name} />
+                                    <p>{fileItem.file.name}（{(fileItem.file.size / 1024).toFixed(2)} KB）</p>
+                                </figure>
+                            }
                             <button type='button' className={mainStyle.resetBtn}
                                 onClick={() => removeFile(index)}
                                 disabled={loading}
                                 aria-label="削除"
                             >🗑️</button>
-                        </figure>
+                        </div>
                     ))}
                 </div>
             }
-        </div>
+        </>
     );
 };
