@@ -33,7 +33,7 @@ export const useGenerateChat = () => {
             // 会話履歴を更新（ユーザーとボットのメッセージを含む）
             setChatHistory([...updatedChatHistory, botMessage]);
         } catch {
-            console.error('Google API error occurred.');
+            console.error('Google API error occurred. | `useGenerateChat.ts`');
         } finally {
             // 初期化処理
             setLoading(false);

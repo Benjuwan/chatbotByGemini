@@ -9,7 +9,7 @@ export type partsPropType = {
 
 export type filePreviewType = {
     file: File;
-    preview: string;
+    preview?: string;
 };
 
 export type getAIReadyDataType = {

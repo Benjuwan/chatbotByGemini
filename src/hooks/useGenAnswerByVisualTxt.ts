@@ -72,7 +72,7 @@ export const useGenAnswerByVisualTxt = () => {
             const response = result.response;
             return response.text();
         } catch {
-            throw new Error('Google API error occurred. | 生成処理中にエラー発生');
+            throw new Error('Google API error occurred. | `useGenAnswerByVisualTxt.ts`');
         }
     };
 
