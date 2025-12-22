@@ -80,6 +80,49 @@
 
         &.system {
             border-color: #dadada;
+
+            & h3 {
+                font-weight: bold;
+                border-left: 4px solid #dadada;
+                padding: 0 0 0 .5em;
+                margin-bottom: 1em;
+            }
+
+            & h4,
+            & h5,
+            & h6 {
+                font-weight: bold;
+                margin: 1em 0;
+                border-bottom: 1px solid #dadada;
+            }
+
+            & p {
+                &:not(:last-of-type) {
+                    margin-bottom: 1em;
+                }
+            }
+
+            & a {
+                color: #fda900;
+            }
+
+            & ul,
+            & ol {
+                & li {
+                    overflow-wrap: anywhere;
+                    margin-bottom: 1em;
+
+                    &:not(:has(p)) {
+                        text-indent: -1em;
+                        padding-left: 1em;
+
+                        &::before {
+                            content: "-";
+                            margin-right: .5em;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -145,6 +188,11 @@
                 color: #cc1515;
             }
         }
+    }
+
+    &.stikeyMode {
+        position: sticky;
+        top: 1em;
     }
 }
 

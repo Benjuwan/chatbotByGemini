@@ -57,7 +57,7 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     return (
-        <div className={mainStyle.runFormWrapper}>
+        <div className={`${mainStyle.runFormWrapper} ${chatHistory.length > 1 ? mainStyle.stikeyMode : undefined}`}>
             <form onSubmit={handleSubmit}>
                 <p className={mainStyle.caption}>※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
                 <textarea onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>

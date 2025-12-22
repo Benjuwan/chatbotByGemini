@@ -9,24 +9,24 @@
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成
-- @eslint/js@9.39.1
+- @eslint/js@9.39.2
 - @google/generative-ai@0.24.1
-- @types/node@24.10.1
+- @types/node@25.0.3
 - @types/react-dom@19.2.3
 - @types/react@19.2.7
-- @vitejs/plugin-react@5.1.1
+- @vitejs/plugin-react@5.1.2
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
-- eslint-plugin-react-refresh@0.4.24
+- eslint-plugin-react-refresh@0.4.26
 - eslint-plugin-react@7.37.5
-- eslint@9.39.1
+- eslint@9.39.2
 - globals@16.5.0
-- react-dom@19.2.1
+- react-dom@19.2.3
 - react-markdown@10.1.0
-- react@19.2.1
-- typescript-eslint@8.48.1
+- react@19.2.3
+- typescript-eslint@8.50.0
 - typescript@5.9.3
-- vite@7.2.6
+- vite@7.3.0
 
 ## 必要な設定
 ### `.env`ファイルを用意
