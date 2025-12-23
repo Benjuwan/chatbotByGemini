@@ -24,7 +24,7 @@
 - react-dom@19.2.3
 - react-markdown@10.1.0
 - react@19.2.3
-- typescript-eslint@8.50.0
+- typescript-eslint@8.50.1
 - typescript@5.9.3
 - vite@7.3.0
 

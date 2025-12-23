@@ -190,7 +190,7 @@
         }
     }
 
-    &.stikeyMode {
+    &.stickyMode {
         position: sticky;
         top: 1em;
     }
