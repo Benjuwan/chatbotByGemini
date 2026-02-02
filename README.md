@@ -1,6 +1,7 @@
 # chatbot by Gemini
 `Gemini`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
-[詳細なプロンプト設定は`src/constance/prompt.ts`に記載](/src/constance/prompt.ts)しています。  
+[詳細なプロンプト設定は`src/constance/prompt.ts`に記載](/src/constance/prompt.ts)しています。    
+
 バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
 現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
 
@@ -85,3 +86,48 @@ npm run dev
 
 `Local: http://localhost:5173`などが表示されればOK  
 上記にアクセスしてチャットボットに問いかけてみてください。
+
+## CloudFlare Workers にエンドポイントを公開・設定する方法
+※CloudFlare のアカウントが必須です。
+
+### 1. バックエンド： `gemini-proxy`に移動
+```bash
+cd gemini-proxy
+```
+
+### 2. CloudFlare Workers にデプロイ
+`gemini-proxy`にいる状態で以下のコマンドを実施
+```bash
+npx wrangler deploy
+```
+
+#### 環境変数（Gemini API キー）の設定
+※今回設定する環境変数名は`GEMINI_API_KEY`
+```bash
+npx wrangler secret put <環境変数名>
+```
+
+1. このコマンドを打つと`Enter a secret value:`と聞かれる
+2. GeminiのAPIキーをペーストして`Enter`を押下で設定完了
+
+---
+
+`npx wrangler deploy`が成功したときに表示された URL（例: https://gemini-proxy.あなたのアカウント.workers.dev）が公開エンドポイント。  
+これを、フロントエンド側の`.env`ファイルに設定すれば完了。
+```bash
+# 生成したバックエンドドメインだけではなく、末尾に /api/generate を付ける
+VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.dev/api/generate
+```
+
+> [!NOTE]
+> ##### CORS設定の更新
+> 現在、`gemini-proxy/src/config/theConfig.ts`の`ALLOWED_ORIGINS`（CORSのホワイトリスト）には`localhost`（開発用途アドレス）しか入っていないので  
+> フロントエンドを本番公開（例：CloudFlare Pages にデプロイ）した後は、 **そのフロントエンドのURLをWorkers側の設定ファイルに追加して、再度`npx wrangler deploy`する** のを忘れないように注意。  
+> 1. `gemini-proxy/src/config/theConfig.ts`の`ALLOWED_ORIGINS`に埋め込み対象ドメインを追加
+> 2. `gemini-proxy/src/index.ts`のコードを現状の「全許可」から「制限付き」に書き換える（※コメントアウトを切り替える）
+> 3. 再度 `npx wrangler deploy` する
+
+## 本環境で使用する際の注意事項
+現在の設定（`gemini-proxy/src/index.ts`）では、公開エンドポイントは誰でもアクセス可能な状態なのでチャットボット機能を埋め込んだサイト（ページ）の開発者ツール（Network タブ）から公開エンドポイントが露出してしまいます。  
+APIキーはバックエンド側で管理するので漏れることは絶対にないですが、公開エンドポイントが見れることで Gemini API のタダ乗りが可能になります。  
+つまり、有料版を使用している場合はタダ乗りによって**API利用料が増加して従量課金が増えるリスク**があり、無料版の場合は**従量課金は発生しないものの429エラーが出て使用できなくなるリスク**があります。
