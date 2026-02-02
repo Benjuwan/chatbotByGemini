@@ -31,10 +31,25 @@ export const useGenerateChatOnlyTxt = () => {
         const updatedChatHistory = [...chatHistory, userMessage];
 
         // プロンプト生成（調整）処理
-        const thePromtMess: string = await adjustPromptMess(chatHistory, input);
+        const thePromtMessage: string = await adjustPromptMess(chatHistory, input);
 
         try {
-            // リクエストを送信し、レスポンスを取得
+            // 【Google GenAI SDK】Cloudflare Workers API を叩く
+            // ※バックエンド側の起動が必要
+            // ※ただし、以下設定では`imageParts`キーを渡していないのでチャットは成立しない（機能しない）
+            // const response = await fetch(WORKER_ENDPOINT, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         prompt: thePromtMessage
+            //     }),
+            // });
+
+
+
+            // 【標準的な実装】リクエストを送信してレスポンスを取得
             const response = await fetch(
                 GEMINI_ENDPOINT_URL,
                 {
@@ -44,10 +59,12 @@ export const useGenerateChatOnlyTxt = () => {
                     },
                     body: JSON.stringify({
                         // プロンプトをシリアライズ（直列化）した形でAIに渡す
-                        contents: [{ parts: [{ text: thePromtMess }] }],
+                        contents: [{ parts: [{ text: thePromtMessage }] }],
                     }),
                 }
             );
+
+
 
             if (!response.ok) {
                 // エラーハンドリング

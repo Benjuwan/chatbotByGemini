@@ -1,18 +1,28 @@
-// Gemini のモデル指定
+// Vite が標準で提供している import.meta.env.DEV を使うと、npm run dev の時は true、ビルド後は false に自動で切り替わる
+const IS_DEV: boolean = import.meta.env.DEV;
+
+// Gemini のモデル指定（※バックエンド側は`gemini-proxy/src/config/theConfig.ts`で指定）
 // https://ai.google.dev/gemini-api/docs/models?hl=ja
-export const GEMINI_MODEL = "gemini-3-flash-preview";
+export const GEMINI_MODEL = "gemini-2.5-flash";
 
 // GeminiのAPIキー指定
 // ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
 // ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
 export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
+// Cloudflare Workers のエンドポイント
+// バックエンド処理を「リクエスト時に瞬間起動」するサーバーレス環境（今回のユースケースではエンドポイント設置）
+// ローカル開発時は`http://localhost:8787/api/generate`を使用
+export const WORKER_ENDPOINT = IS_DEV ?
+    'http://localhost:8787/api/generate' :
+    `https://gemini-proxy.${import.meta.env.VITE_CLOUDFLARE_SUBDOMAIN}/api/generate`;
+
 export const GEMINI_ENDPOINT_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 /* -------------------- 以下プロンプト -------------------- */
 
 // プロンプト内容
-export const prompt: string = `
+export const thePromptGuide: string = `
 ## タスク： ユーザーが入力した内容に対して明瞭かつ端的に返答して
 過度な迎合は不要です。一般的な礼節を意識した対応（返答口調）でお願いします。
 
