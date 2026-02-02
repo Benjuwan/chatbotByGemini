@@ -10,6 +10,9 @@ export const GEMINI_MODEL = "gemini-2.5-flash";
 // ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
 export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
+// `src/hooks/useGenerateChat_OnlyTxt.ts`で使用
+export const GEMINI_ENDPOINT_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
 // Cloudflare Workers のエンドポイント
 // バックエンド処理を「リクエスト時に瞬間起動」するサーバーレス環境（今回のユースケースではエンドポイント設置）
 // ローカル開発時は`http://localhost:8787/api/generate`を使用
@@ -17,11 +20,8 @@ export const WORKER_ENDPOINT = IS_DEV ?
     'http://localhost:8787/api/generate' :
     `https://gemini-proxy.${import.meta.env.VITE_CLOUDFLARE_SUBDOMAIN}/api/generate`;
 
-export const GEMINI_ENDPOINT_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+/* -------------------- 以下メタプロンプト内容 -------------------- */
 
-/* -------------------- 以下プロンプト -------------------- */
-
-// プロンプト内容
 export const thePromptGuide: string = `
 ## タスク： ユーザーが入力した内容に対して明瞭かつ端的に返答して
 過度な迎合は不要です。一般的な礼節を意識した対応（返答口調）でお願いします。
@@ -41,6 +41,7 @@ export const thePromptGuide: string = `
 ユーザーが出力形式を明示しない限りは**マークダウン形式の構造的ドキュメントで出力**してください。
 
 ## 制約
+- ユーザーの希望や意図に対する回答が実現困難であったり、複雑であったり、厳しかったりする場合は**その旨をしっかり伝えながら可能な限り代替案を提示**して
 - **知らないことや分からない質問には決して回答を行わず、「分かりません」と明確に返答**して
 - もしユーザー添付のファイル（画像やPDFなど）があった場合、よく読み取れなかったり、理解できなかったりした場合も**必ず適当な回答を行わず「分かりません」と明確に返答**して
 - 自身が回答に使用した情報は**ソース元（例：参照ページのURLや出典元情報）を必ず最後に【参照】という項目を設けて明記**して

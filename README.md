@@ -12,6 +12,26 @@
 > - フロントエンド： `src`（React / vite）
 > - バックエンド： `gemini-proxy`（hono / cloudflare workers）
 
+## フロントエンド関連の設定ファイル
+
+- `src/constance/prompt.ts`  
+フロントエンドで使用するモデルやエンドポイント、メタプロンプトの設定箇所ファイル。  
+※ファイル内の`GEMINI_MODEL`, `GEMINI_API_KEY`, `GEMINI_ENDPOINT_URL`は`src/hooks/useGenerateChat_OnlyTxt.ts`用の変数です。
+
+- `.env`  
+フロントエンド用の`GEMINI_API_KEY`の設定と、Cloudflare Workers のエンドポイントの設定を担う環境変数ファイル。
+
+## バックエンド（hono / cloudflare workers）関連の設定ファイル
+
+- `gemini-proxy/src/index.ts`  
+バックエンド用のindexファイル。CORSをホワイトリスト設定する際に調整が必要（※現在はどこからでもアクセスを受け付ける仕様）
+
+- `gemini-proxy/src/config/theConfig.ts`  
+バックエンド用のモデル選定や、CORSのホワイトリストを設定するための設定ファイル。
+
+- `gemini-proxy/.dev.vars`  
+バックエンド用の`GEMINI_API_KEY`の設定ファイル。
+
 ---
 
 > [!NOTE]
@@ -20,13 +40,13 @@
 > この際、不要となるファイルアップロードコンポーネント`FileUploader`や関連箇所、関連State, 関連する型の読み込みなどを削除する必要があります。  
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
-## 技術構成
+## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.2
 - @google/genai@1.39.0
 - @types/node@25.2.0
 - @types/react-dom@19.2.3
 - @types/react@19.2.10
-- @vitejs/plugin-react@5.1.2
+- @vitejs/plugin-react@5.1.3
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
 - eslint-plugin-react-refresh@0.5.0
@@ -39,6 +59,17 @@
 - typescript-eslint@8.54.0
 - typescript@5.9.3
 - vite@7.3.1
+
+## 技術構成（バックエンド：`gemini-proxy`）
+- hono@4.11.7
+- wrangler@4.61.1
+
+> [!NOTE]
+> `wrangler`はCloudflare Workersの公式CLIツール。  
+> ※Windows環境で`wrangler`コマンドが認識されない場合は`npx wrangler dev`を使用し、  
+> 案内に従って`wrangler`をインストール（`npm install -D wrangler`）してください。
+
+---
 
 ## 必要な設定
 ### 1. `.env`ファイルを用意
@@ -125,7 +156,7 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 > フロントエンドを本番公開（例：CloudFlare Pages にデプロイ）した後は、 **そのフロントエンドのURLをWorkers側の設定ファイルに追加して、再度`npx wrangler deploy`する** のを忘れないように注意。  
 > 1. `gemini-proxy/src/config/theConfig.ts`の`ALLOWED_ORIGINS`に埋め込み対象ドメインを追加
 > 2. `gemini-proxy/src/index.ts`のコードを現状の「全許可」から「制限付き」に書き換える（※コメントアウトを切り替える）
-> 3. 再度 `npx wrangler deploy` する
+> 3. 再度 `npx wrangler deploy`する
 
 ## 本環境で使用する際の注意事項
 現在の設定（`gemini-proxy/src/index.ts`）では、公開エンドポイントは誰でもアクセス可能な状態なのでチャットボット機能を埋め込んだサイト（ページ）の開発者ツール（Network タブ）から公開エンドポイントが露出してしまいます。  
