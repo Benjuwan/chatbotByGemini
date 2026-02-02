@@ -8,8 +8,10 @@ const eslintConfig = [
     /* 除外するファイル/ディレクトリを指定 */
     {
         ignores: [
-            "node_modules/**",  // npmパッケージディレクトリ
-            "dist/**"           // 配布用ディレクトリ
+            "node_modules/**",                          // npmパッケージディレクトリ
+            "dist/**",                                  // 配布用ディレクトリ
+            "gemini-proxy/.wrangler",                   // バックエンド側（Cloudflare workers）の設定ファイルディレクトリ
+            "gemini-proxy/worker-configuration.d.ts"    // バックエンド側（Cloudflare workers）の型定義ファイル
         ]
     },
 
