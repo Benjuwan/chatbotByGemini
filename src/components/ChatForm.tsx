@@ -1,4 +1,3 @@
-import mainStyle from "../styles/main.module.css";
 import { useMemo, useState, type ChangeEvent } from "react";
 import type { chatMessageType, filePreviewType, getAIReadyDataType } from "../types/theChatBotType";
 import { FileUploader } from "./FileUploader";
@@ -57,20 +56,19 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     return (
-        <div className={`${mainStyle.runFormWrapper} ${chatHistory.length > 1 ? mainStyle.stickyMode : undefined}`}>
+        <div className={`p-4 bg-[#eaeaea] rounded min-[1025px]:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
             <form onSubmit={handleSubmit}>
-                <p className={mainStyle.caption}>※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
-                <textarea onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
+                <p className="indent-[-1em] pl-4 mb-2 text-[1.2rem] min-[1025px]:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
+                <textarea className="text-base w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 min-[1025px]:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
                 <FileUploader props={{
                     loading: loading,
                     filePreviews: filePreviews,
                     setFilePreviews: setFilePreviews
                 }} />
                 {loading ?
-                    <p className={mainStyle.isRendering}>メッセージ生成中……</p> :
-                    <button disabled={input.length === 0 || loading}>送信</button>
+                    <p className="mt-4 shadow-[inset_0_0_8px_rgba(78,78,78,0.5)] bg-white p-4 rounded">メッセージ生成中……</p> :
+                    <button className="appearance-none block mt-10 border border-transparent bg-[#fda900] text-white rounded px-4 py-1 disabled:bg-[#dadada] disabled:text-[#eaeaea] enabled:cursor-pointer enabled:hover:bg-white enabled:hover:text-[#fda900] enabled:hover:border-[#fda900] transition-all duration-250" disabled={input.length === 0 || loading}>送信</button>
                 }
-                {filePreviews.length > 0 && <button className={mainStyle.resetBtn} type="button" disabled={loading} onClick={() => setFilePreviews([])}>画像を一括リセット</button>}
             </form>
         </div>
     );
