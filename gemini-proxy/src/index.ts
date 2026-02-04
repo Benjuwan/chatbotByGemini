@@ -25,6 +25,7 @@ app.use('/*', cors());
 //   },
 // }));
 
+// `src/constance/prompt.ts`の WORKER_ENDPOINT を叩く
 app.post('/api/generate', async (c) => {
   try {
     // リクエストボディの取得

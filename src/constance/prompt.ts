@@ -3,7 +3,7 @@ const IS_DEV: boolean = import.meta.env.DEV;
 
 // Gemini のモデル指定（※バックエンド側は`gemini-proxy/src/config/theConfig.ts`で指定）
 // https://ai.google.dev/gemini-api/docs/models?hl=ja
-export const GEMINI_MODEL = "gemini-2.5-flash";
+export const GEMINI_MODEL = "gemini-3-flash-preview";
 
 // GeminiのAPIキー指定
 // ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
