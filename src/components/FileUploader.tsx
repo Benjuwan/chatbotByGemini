@@ -7,7 +7,7 @@ type FileUploaderPropsType = {
     setFilePreviews: React.Dispatch<React.SetStateAction<filePreviewType[]>>;
 };
 
-const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB
 
 export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
     const { loading, filePreviews, setFilePreviews } = props;
@@ -17,13 +17,19 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
     const validateFile = (file: File): void => {
         if (file.size > MAX_SIZE_BYTES) {
             const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            alert(`ファイルサイズが大きすぎます: ${file.name}\n最大20MBまで（filesize: ${sizeMB}MB）`);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+
             throw new Error(
-                `ファイルサイズが大きすぎます: ${file.name}\n最大5MBまで (現在: ${sizeMB}MB)`
+                `ファイルサイズが大きすぎます: ${file.name}\n最大20MBまで（filesize: ${sizeMB}MB）`
             );
         }
     };
 
-    // `FileReader`によるアップロード画像の描画処理
+    // FileReader によるアップロード画像の描画処理
     const renderPreview = async (file: File): Promise<filePreviewType> => {
         const reader = new FileReader();
 
@@ -61,18 +67,20 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
             return;
         }
 
+        files.forEach(file => validateFile(file));
+
         try {
-            files.forEach(file => validateFile(file));
             const previews = await Promise.all(files.map(renderPreview));
             setFilePreviews(prev => [...prev, ...previews]);
         } catch {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            throw new Error('ファイルのバリデーションまたは描画処理中にエラーが発生');
+            throw new Error('ファイルの描画処理中にエラーが発生');
         }
     };
 
+    // アップロードファイルの削除またはリセット機能
     const removeFile = (index: number | []): void => {
         if (typeof index === 'number') {
             setFilePreviews(prev => prev.filter((_, i) => i !== index));
@@ -86,7 +94,9 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
     };
 
     // JSXの描画処理内で、アップロードしたファイルがpdfファイルかどうかをチェックする関数
-    const checkPdfFile = (fileItem: filePreviewType): boolean => fileItem.file.type.split('/').at(-1) === 'pdf';
+    const checkPdfFile = (fileItem: filePreviewType): boolean => {
+        return fileItem.file.type.split('/').at(-1) === 'pdf';
+    }
 
     useEffect(() => {
         if (fileInputRef.current) {
@@ -125,7 +135,7 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
                             </div>
                         ))}
                     </div>
-                    {filePreviews.length > 2 && <button className="text-[#333] bg-white border border-[#dadada] my-2 enabled:cursor-pointer enabled:hover:border-[#cc1515] enabled:hover:text-[#cc1515] p-2 rounded" type="button" disabled={loading} onClick={() => removeFile([])}>画像を一括リセット</button>}
+                    {filePreviews.length > 1 && <button className="text-[#333] bg-white border border-[#dadada] my-2 enabled:cursor-pointer enabled:hover:border-[#cc1515] enabled:hover:text-[#cc1515] p-2 rounded" type="button" disabled={loading} onClick={() => removeFile([])}>画像を一括リセット</button>}
                 </>
             }
         </>
