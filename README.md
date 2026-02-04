@@ -64,7 +64,7 @@
 
 ## 技術構成（バックエンド：`gemini-proxy`）
 - hono@4.11.7
-- wrangler@4.61.1
+- wrangler@4.62.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
