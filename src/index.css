@@ -9,3 +9,12 @@
     transform: translate(160%, -50%);
   }
 }
+
+@layer utilities {
+  .isChatView {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transition-delay: .25s;
+  }
+}

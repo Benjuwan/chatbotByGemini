@@ -8,10 +8,11 @@ type chatFormPropsType = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     chatHistory: chatMessageType[];
     setChatHistory: React.Dispatch<React.SetStateAction<chatMessageType[]>>;
+    handleChatView?: () => void;
 };
 
 export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
-    const { loading, setLoading, chatHistory, setChatHistory } = props;
+    const { loading, setLoading, chatHistory, setChatHistory, handleChatView } = props;
 
     const [input, setInput] = useState<string>("");
     const [filePreviews, setFilePreviews] = useState<filePreviewType[]>([]);
@@ -56,20 +57,21 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     return (
-        <div className={`p-4 bg-[#eaeaea] rounded min-[1025px]:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
-            <form onSubmit={handleSubmit}>
-                <p className="indent-[-1em] pl-4 mb-2 text-[1.2rem] min-[1025px]:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
-                <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 min-[1025px]:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
-                <FileUploader props={{
-                    loading: loading,
-                    filePreviews: filePreviews,
-                    setFilePreviews: setFilePreviews
-                }} />
-                {loading ?
-                    <p className="mt-4 shadow-[inset_0_0_8px_rgba(78,78,78,0.5)] bg-white p-4 rounded">メッセージ生成中……</p> :
-                    <button className="appearance-none block mt-10 border border-transparent bg-[#fda900] text-white rounded px-4 py-1 disabled:bg-[#dadada] disabled:text-[#eaeaea] enabled:cursor-pointer enabled:hover:bg-white enabled:hover:text-[#fda900] enabled:hover:border-[#fda900] transition-all duration-250" disabled={input.length === 0 || loading}>送信</button>
-                }
-            </form>
-        </div>
+        <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded min-[1025px]:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
+            <p className="indent-[-1em] pl-4 mb-2 min-[1025px]:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
+            {handleChatView &&
+                <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer indent-[-1em] pl-4 mb-2 text-[#d90f0f] underline min-[1025px]:text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
+            }
+            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 min-[1025px]:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
+            <FileUploader props={{
+                loading: loading,
+                filePreviews: filePreviews,
+                setFilePreviews: setFilePreviews
+            }} />
+            {loading ?
+                <p className="mt-4 shadow-[inset_0_0_8px_rgba(78,78,78,0.5)] bg-white p-4 rounded">メッセージ生成中……</p> :
+                <button className="appearance-none block mt-10 border border-transparent bg-[#fda900] text-white rounded px-4 py-1 disabled:bg-[#dadada] disabled:text-[#eaeaea] enabled:cursor-pointer enabled:hover:bg-white enabled:hover:text-[#fda900] enabled:hover:border-[#fda900] transition-all duration-250" disabled={input.length === 0 || loading}>送信</button>
+            }
+        </form>
     );
 }
