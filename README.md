@@ -42,11 +42,11 @@
 
 ## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.2
-- @google/genai@1.39.0
+- @google/genai@1.40.0
 - @tailwindcss/vite@4.1.18
-- @types/node@25.2.0
+- @types/node@25.2.2
 - @types/react-dom@19.2.3
-- @types/react@19.2.10
+- @types/react@19.2.13
 - @vitejs/plugin-react@5.1.3
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
@@ -63,8 +63,8 @@
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.11.7
-- wrangler@4.62.0
+- hono@4.11.8
+- wrangler@4.63.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
