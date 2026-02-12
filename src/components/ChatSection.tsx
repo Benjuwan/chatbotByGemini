@@ -20,7 +20,7 @@ export const ChatSection = ({ props }: { props: chatSectionPropsType }) => {
     const { loading, chatHistory } = props;
 
     return (
-        <div className="p-4 bg-[#fff8e9] rounded mb-10 min-[1025px]:w-1/2 min-[1025px]:mb-0">
+        <div className="p-4 bg-[#fff8e9] rounded mb-10 lg:w-1/2 lg:mb-0">
             <style>{`
                 @keyframes skeleton {
                     0% { transform: translate(-20%, -50%); }

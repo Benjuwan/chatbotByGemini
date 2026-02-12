@@ -117,7 +117,7 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
             />
             {filePreviews.length > 0 &&
                 <>
-                    <div className="p-4 grid gap-4 grid-cols-2 min-[1025px]:grid-cols-3">
+                    <div className="p-4 grid gap-4 grid-cols-2 lg:grid-cols-3">
                         {filePreviews.map((fileItem, index) => (
                             <div key={index}>
                                 {checkPdfFile(fileItem) ?
