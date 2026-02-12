@@ -49,7 +49,6 @@ export const useGenAiAnswerByVisualTxt = () => {
                 throw new Error(`Worker Error: ${response.status}`);
             }
 
-            // ★ データの受け取りとreturnを復活させる
             const data = await response.json();
             return data.text ?? '回答がうまく生成されなかったようです。';
         } catch {

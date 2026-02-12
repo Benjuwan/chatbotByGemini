@@ -1,5 +1,5 @@
 # chatbot by Gemini
-`Gemini`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
+`Gemini API`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
 [詳細なプロンプト設定は`src/constance/prompt.ts`に記載](/src/constance/prompt.ts)しています。    
 
 バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
@@ -221,9 +221,9 @@ async function askGemini(
   // 2. 返ってきたJSONを受け取る
   const data = await response.json();
   
-  // 3. 画面に表示する（data.response に回答が入っている想定）
-  console.log("Geminiからの回答:", data.response);
-  return data.response;
+  // 3. 画面に表示する（data.text に回答が入っている想定）
+  console.log("Geminiからの回答:", data.text);
+  return data.text;
 }
 ```
 

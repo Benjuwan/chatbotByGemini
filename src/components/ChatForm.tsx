@@ -57,12 +57,12 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded min-[1025px]:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
-            <p className="indent-[-1em] pl-4 mb-2 min-[1025px]:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
+        <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded lg:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
+            <p className="indent-[-1em] pl-4 mb-2 lg:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
             {handleChatView &&
-                <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer indent-[-1em] pl-4 mb-2 text-[#d90f0f] underline min-[1025px]:text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
+                <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer indent-[-1em] pl-4 mb-2 text-[#d90f0f] underline lg:text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
             }
-            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 min-[1025px]:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
+            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 lg:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
             <FileUploader props={{
                 loading: loading,
                 filePreviews: filePreviews,
