@@ -42,12 +42,12 @@
 
 ## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.2
-- @google/genai@1.40.0
+- @google/genai@1.41.0
 - @tailwindcss/vite@4.1.18
-- @types/node@25.2.2
+- @types/node@25.2.3
 - @types/react-dom@19.2.3
-- @types/react@19.2.13
-- @vitejs/plugin-react@5.1.3
+- @types/react@19.2.14
+- @vitejs/plugin-react@5.1.4
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
 - eslint-plugin-react-refresh@0.5.0
@@ -58,13 +58,13 @@
 - react-markdown@10.1.0
 - react@19.2.4
 - tailwindcss@4.1.18
-- typescript-eslint@8.54.0
+- typescript-eslint@8.55.0
 - typescript@5.9.3
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.11.8
-- wrangler@4.63.0
+- hono@4.11.9
+- wrangler@4.64.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
@@ -79,7 +79,7 @@
 
 ```bash
 VITE_GEMINI_API_KEY = GeminiのAPIキー
-VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン
+VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： https://<Worker の名前>.<ランダムな文字列>.workers.dev）
 ```
 
 > [!IMPORTANT]
