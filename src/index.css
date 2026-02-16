@@ -17,4 +17,8 @@
     visibility: visible;
     transition-delay: .25s;
   }
+
+  hr {
+    display: none;
+  }
 }

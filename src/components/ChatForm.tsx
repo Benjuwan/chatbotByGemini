@@ -1,7 +1,9 @@
-import { useMemo, useState, type ChangeEvent } from "react";
+import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 import type { chatMessageType, filePreviewType, getAIReadyDataType } from "../types/theChatBotType";
 import { FileUploader } from "./FileUploader";
 import { useGenerateChat } from "../hooks/useGenerateChat";
+import { useHandleInputValueSanitize } from "../hooks/useHandleInputValueSanitize";
+import { useCheckDesktopView } from "../hooks/useCheckDesktopView";
 
 type chatFormPropsType = {
     loading: boolean;
@@ -17,6 +19,15 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     const [input, setInput] = useState<string>("");
     const [filePreviews, setFilePreviews] = useState<filePreviewType[]>([]);
 
+    const { generateChat } = useGenerateChat();
+    const { handleInputValueSanitize } = useHandleInputValueSanitize();
+    const { isDesktopView } = useCheckDesktopView();
+
+    const handlePromptSanitize = (e: SyntheticEvent<HTMLTextAreaElement>): void => {
+        const sanitizedPrompt = handleInputValueSanitize(e.currentTarget.value);
+        setInput(sanitizedPrompt);
+    }
+
     // AI解析用に調整したファイル情報
     const getAIReadyData: getAIReadyDataType[] = useMemo(() => {
         return filePreviews.map(fileItem => ({
@@ -26,8 +37,6 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
             base64Data: fileItem.preview ? fileItem.preview.split(',')[1] : null,
         }));
     }, [filePreviews]);
-
-    const { generateChat } = useGenerateChat();
 
     const handleSubmit = (e: ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault();
@@ -57,12 +66,14 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded lg:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
-            <p className="indent-[-1em] pl-4 mb-2 lg:text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
-            {handleChatView &&
-                <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer indent-[-1em] pl-4 mb-2 text-[#d90f0f] underline lg:text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
+        <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded border border-[#c5c5c5] lg:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
+            {isDesktopView &&
+                <p className="mb-2 text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
             }
-            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 lg:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e) => setInput(e.target.value)}>&nbsp;</textarea>
+            {handleChatView &&
+                <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer mb-2 text-[#d90f0f] underline text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
+            }
+            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 lg:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e: SyntheticEvent<HTMLTextAreaElement>) => handlePromptSanitize(e)}>&nbsp;</textarea>
             <FileUploader props={{
                 loading: loading,
                 filePreviews: filePreviews,
