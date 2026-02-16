@@ -64,7 +64,7 @@
 
 ## 技術構成（バックエンド：`gemini-proxy`）
 - hono@4.11.9
-- wrangler@4.64.0
+- wrangler@4.65.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
@@ -124,12 +124,13 @@ npm run dev
 ※Cloudflare のアカウントが必須です。
 
 > [!IMPORTANT]
-> ### 別アプリでエンドポイントを新たに公開（発行）したい場合
-> 既存の`gemini-proxy`ディレクトリ（hono / Cloudflare workers）を利用すると**一部変更するだけ**で簡単に Gemini API の新規エンドポイントを発行できる。  
+> ### 別アプリで（当リポジトリのような）エンドポイントを新たに公開（発行）したい場合
+> **※既に`gemini-proxy`で1つ以上を公開済みで、新たに別のエンドポイントを追加公開**したい場合  
+> 既存の`gemini-proxy`ディレクトリ（hono / Cloudflare workers）を利用すると**一部変更（`name`プロパティの値）するだけ**で簡単に Gemini API の新規エンドポイントを発行できる。  
 > ただし、この**一部を修正しないと既存のエンドポイントが上書きされるリスクがある**ので注意。  
 > 既存の`gemini-proxy`ディレクトリを流用して  Gemini API の新規エンドポイントを発行するには`gemini-proxy/wrangler.jsonc`ファイルを編集する。
-> `gemini-proxy/wrangler.jsonc`ファイルを**一部変更**した後のフローは以下と同じく、`npx wrangler deploy` -> `npx wrangler secret put <環境変数名>`で Cloudflare Workers に接続する  
-> - `gemini-proxy/wrangler.jsonc`
+> `gemini-proxy/wrangler.jsonc`ファイルを**一部変更**した後のフローは以下紹介のものと同じく、`npx wrangler deploy` -> `npx wrangler secret put <環境変数名>`で Cloudflare Workers に接続する  
+> - `gemini-proxy/wrangler.jsonc`（`name`プロパティの値を変更）
 ```diff
 /**
  * For more details on how to configure Wrangler, refer to:
@@ -146,7 +147,7 @@ npm run dev
     .
 ```
 
-### 1. バックエンド： `gemini-proxy`に移動
+### 1. バックエンドディレクトリ（`gemini-proxy`）に移動
 ```bash
 cd gemini-proxy
 ```
@@ -156,6 +157,8 @@ cd gemini-proxy
 ```bash
 npx wrangler deploy
 ```
+
+- Note: [**エンドポイントへのアクセスをホワイトリスト形式にする場合**](#cors設定の更新)
 
 #### 環境変数（Gemini API キー）の設定
 ※今回設定する環境変数名は`GEMINI_API_KEY`
@@ -178,7 +181,7 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 > [!NOTE]
 > ##### CORS設定の更新
 > 現在、`gemini-proxy/src/config/theConfig.ts`の`ALLOWED_ORIGINS`（CORSのホワイトリスト）には`localhost`（開発用途アドレス）しか入っていないので  
-> フロントエンドを本番公開（例：Cloudflare Pages にデプロイ）した後は、 **そのフロントエンドのURLをWorkers側の設定ファイルに追加して、再度`npx wrangler deploy`する** のを忘れないように注意。  
+> フロントエンドを本番公開（例：Cloudflare Pages にデプロイ）した後は、 **そのフロントエンドのURLを Workers 側の設定ファイルに追加して、再度`npx wrangler deploy`する** のを忘れないように注意。  
 > 1. `gemini-proxy/src/config/theConfig.ts`の`ALLOWED_ORIGINS`に埋め込み対象ドメインを追加
 > 2. `gemini-proxy/src/index.ts`のコードを現状の「全許可」から「制限付き」に書き換える（※コメントアウトを切り替える）
 > 3. 再度 `npx wrangler deploy`する
