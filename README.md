@@ -173,6 +173,9 @@ npx wrangler secret put <環境変数名>
 
 `npx wrangler deploy`が成功したときに表示された URL（例: https://gemini-proxy.あなたのアカウント.workers.dev）が公開エンドポイント。  
 これを、フロントエンド側の`.env`ファイルに設定すれば完了。
+
+- **生成したバックエンドドメインだけではなく、末尾に`/api/generate`（※）を付ける**  
+※`gemini-proxy/src/index.ts`で設定したエンドポイントパス
 ```bash
 # 生成したバックエンドドメインだけではなく、末尾に /api/generate を付ける
 VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.dev/api/generate
@@ -194,6 +197,14 @@ APIキーはバックエンド側で管理するので漏れることは絶対�
 ## Gemini API のエンドポイントを別アプリ（例：SPA）で呼び出す方法
 今回エンドポイントを発行してどこからでも Gemini API を呼び出せるようになりました。  
 当プロジェクトの自作チャットボットを他のSPAとかに埋め込む場合は、ロジック部分（例：バックエンド部分）は流用せずとも`VITE_WORKER_ENDPOINT`を fetch API で叩くというシンプルな実装イメージで Gemini API のレスポンスjsonが返ってくるイメージです。
+
+> [!IMPORTANT]
+> エンドポイントを叩くには、設定した公開エンドポイント（`VITE_WORKER_ENDPOINT`）の末尾にパスを指定する必要がある  
+```js
+// 当リポジトリの設定だと`/api/generate`が末尾に必要となる
+// `gemini-proxy/src/index.ts`で設定したエンドポイントパス
+`${VITE_WORKER_ENDPOINT}/api/generate}`
+```
 
 つまり以下は気にする必要がありません。    
 
