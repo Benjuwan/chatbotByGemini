@@ -31,7 +31,7 @@ export const ChatBot = () => {
                     }} />
                 </div>
             </section>
-            {isChatView || <button className="cursor-pointer fixed top-20 right-4 z-9 w-11 h-11 rounded-full grid place-content-center bg-[#eaeaea] shadow-[0px_0px_8px_rgba(0,0,0,.5)] hover:scale-[1.2] active:scale-[1.2] duration-250" type="button" onClick={handleChatView}>+</button>}
+            {isChatView || <button className="cursor-pointer fixed top-4 right-4 z-9 w-11 h-11 rounded-full grid place-content-center bg-[#eaeaea] shadow-[0px_0px_8px_rgba(0,0,0,.5)] hover:scale-[1.2] active:scale-[1.2] duration-250" type="button" onClick={handleChatView}>+</button>}
         </>
     );
 };
