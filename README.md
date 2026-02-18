@@ -53,13 +53,13 @@
 > [!NOTE]
 > - **画像やPDFファイルを通じたやり取りが必要ない場合**  
 > 現状の実装（[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)）でも問題ないですが`src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び調整することでテキスト専用チャットボットになります。  
-> この際、不要となるファイルアップロードコンポーネント`FileUploader`や関連箇所、関連State, 関連する型の読み込みなどを削除する必要があります。  
+> この際、バックエンド側の起動は不要となります。しかし、 **クライアントサイドにAPIキーが露出することになるため本番環境など実務では決して使用しない**でください。  
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.2
 - @google/genai@1.41.0
-- @tailwindcss/vite@4.1.18
+- @tailwindcss/vite@4.2.0
 - @types/node@25.2.3
 - @types/react-dom@19.2.3
 - @types/react@19.2.14
@@ -73,14 +73,14 @@
 - react-dom@19.2.4
 - react-markdown@10.1.0
 - react@19.2.4
-- tailwindcss@4.1.18
+- tailwindcss@4.2.0
 - typescript-eslint@8.56.0
 - typescript@5.9.3
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.11.9
-- wrangler@4.65.0
+- hono@4.11.10
+- wrangler@4.66.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
