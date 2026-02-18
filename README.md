@@ -1,6 +1,22 @@
 # chatbot by Gemini
 `Gemini API`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
-[詳細なプロンプト設定は`src/constance/prompt.ts`に記載](/src/constance/prompt.ts)しています。    
+
+## PDFファイルの読み取りから質疑応答のデモキャプチャ
+![デモキャプチャ1](./public/img/guide-01.png)
+- 当リポジトリの Gemini の行動規範となる憲法（システムプロンプト）は[`src/constance/prompt.ts`](/src/constance/prompt.ts)で設定しています
+- ※サンプルキャプチャでは、デジタル庁公開のスマートフォン初心者向けの教材 PDF
+[地図アプリを使おう](https://www.digi-katsu.go.jp/teaching-materials/R7/%E5%8F%97%E8%AC%9B%E8%80%85%E7%94%A8_%E5%9C%B0%E5%9B%B3%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E4%BD%BF%E3%81%8A%E3%81%86.pdf)を利用しています
+
+![デモキャプチャ2](./public/img/guide-02.png)
+- 前回の質疑応答内容を記憶したまま、次のやり取りが続けられます
+
+![デモキャプチャ3](./public/img/guide-03.png)
+- より詳細な質問をすると添付資料に基づいて回答してくれます
+
+![デモキャプチャ4](./public/img/guide-04.png)
+- 先ほどの Gemini 回答にあった資料3pに**無料**という記載が確認できます
+
+---  
 
 バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
 現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
@@ -58,7 +74,7 @@
 - react-markdown@10.1.0
 - react@19.2.4
 - tailwindcss@4.1.18
-- typescript-eslint@8.55.0
+- typescript-eslint@8.56.0
 - typescript@5.9.3
 - vite@7.3.1
 

@@ -20,7 +20,7 @@ export const WORKER_ENDPOINT = IS_DEV ?
     'http://localhost:8787/api/generate' :
     `https://gemini-proxy.${import.meta.env.VITE_CLOUDFLARE_SUBDOMAIN}/api/generate`;
 
-/* -------------------- 以下メタプロンプト内容 -------------------- */
+/* -------------------- 以下 憲法（システムプロンプト）内容 -------------------- */
 
 export const thePromptGuide: string = `
 ## タスク
