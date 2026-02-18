@@ -1,11 +1,13 @@
-import { GEMINI_ENDPOINT_URL } from "../constance/prompt";
+import { GEMINI_API_KEY, GEMINI_MODEL } from "../constance/prompt";
 import type { chatMessageType, partsPropType } from "../types/theChatBotType";
 import { useAdjustPromptMess } from "./useAdjustPromptMess";
+
+const GEMINI_ENDPOINT_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 export const useGenerateChatOnlyTxt = () => {
     const { adjustPromptMess } = useAdjustPromptMess();
 
-    // チャットメッセージの生成機能（**AIと文字だけのやり取りで良い場合はこのコードでも対応可能**）
+    // チャットメッセージの生成機能（AIと文字だけのやり取りで良い場合はこのコードでも対応可能）
 
     /**
      *【目的】Google GenAI SDKの将来的な変更に備えて標準的な実装を残しておく
@@ -34,22 +36,6 @@ export const useGenerateChatOnlyTxt = () => {
         const thePromtMessage: string = await adjustPromptMess(chatHistory, input);
 
         try {
-            // 【Google GenAI SDK】Cloudflare Workers API を叩く
-            // ※バックエンド側の起動が必要
-            // ※ただし、以下設定では`imageParts`キーを渡していないのでチャットは成立しない（機能しない）
-            // const response = await fetch(WORKER_ENDPOINT, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         prompt: thePromtMessage
-            //     }),
-            // });
-
-
-
-            // 【標準的な実装】リクエストを送信してレスポンスを取得
             const response = await fetch(
                 GEMINI_ENDPOINT_URL,
                 {
@@ -64,17 +50,12 @@ export const useGenerateChatOnlyTxt = () => {
                 }
             );
 
-
-
             if (!response.ok) {
-                // エラーハンドリング
                 console.error(`HTTPエラー | ステータスコード: ${response.status}`);
                 return;
             }
 
-            // レスポンスのJSONデータを取得
             const botResponse = await response.json();
-            // console.log(botResponse);
 
             // ボットのメッセージコンテンツを初期化
             let botMessageContent = "";
@@ -94,12 +75,10 @@ export const useGenerateChatOnlyTxt = () => {
                 content: botMessageContent,
             };
 
-            // 会話履歴を更新（ユーザーとボットのメッセージを含む）
             setChatHistory([...updatedChatHistory, botMessage]);
         } catch {
             console.error('Google API error occurred. | `useGenerateChatOnlyTxt.ts`');
         } finally {
-            // 初期化処理
             setLoading(false);
             setInput("");
         }
