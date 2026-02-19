@@ -2,6 +2,7 @@ import { GEMINI_API_KEY, GEMINI_MODEL } from "../constance/prompt";
 import type { chatMessageType, partsPropType } from "../types/theChatBotType";
 import { useAdjustPromptMess } from "./useAdjustPromptMess";
 
+// Gemini のモデルと APIキーはエンドポイント内に含まれる
 const GEMINI_ENDPOINT_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 export const useGenerateChatOnlyTxt = () => {

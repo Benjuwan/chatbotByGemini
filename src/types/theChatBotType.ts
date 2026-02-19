@@ -12,7 +12,7 @@ export type filePreviewType = {
     preview?: string;
 };
 
-export type getAIReadyDataType = {
+export type imagePartsType = {
     name: string;
     type: string;
     size: number

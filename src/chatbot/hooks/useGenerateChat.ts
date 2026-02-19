@@ -1,4 +1,4 @@
-import type { chatMessageType, imagePartsType } from "../types/theChatBotType";
+import type { chatMessageType, imagePartsType } from "../type/GeminiType";
 import { useAdjustPromptMess } from "./useAdjustPromptMess";
 
 export const useGenerateChat = () => {
@@ -21,13 +21,13 @@ export const useGenerateChat = () => {
         const updatedChatHistory = [...chatHistory, userMessage];
 
         try {
-            // プロンプト生成（調整）処理
-            const receivedBotAnswer = await adjustPromptMess(chatHistory, input, imageParts);
+            // プロンプト生成処理： 生成ガイドやユーザーとのこれまでのやり取りを含んだプロンプトメッセージを生成
+            const thePromtMessage = await adjustPromptMess(chatHistory, input, imageParts);
 
             // 生成されたボットのメッセージを作成
             const botMessage = {
                 role: 'system',
-                content: receivedBotAnswer,
+                content: thePromtMessage,
             };
 
             // 会話履歴を更新（ユーザーとボットのメッセージを含む）

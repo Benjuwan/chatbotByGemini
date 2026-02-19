@@ -1,5 +1,6 @@
 # chatbot by Gemini
 `Gemini API`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
+[簡易的なRAG（検索拡張生成）としても扱えます](#簡易的なrag検索拡張生成) 
 
 ## PDFファイルの読み取りから質疑応答のデモキャプチャ
 ![デモキャプチャ1](./public/img/guide-01.png)
@@ -16,20 +17,48 @@
 ![デモキャプチャ4](./public/img/guide-04.png)
 - 先ほどの Gemini 回答にあった資料3pに**無料**という記載が確認できます
 
----  
+## 簡易的なRAG（検索拡張生成）
+当リポジトリのチャットボットは簡易的なRAG（検索拡張生成）としても扱えます。  
+React, TypeScript, Vite を前提としていて、`src/chatbot`は簡単に実装できるファイルセットです。  
+実装（利用）に必要なのは「1. Gemini の APIキー」と「2. 公開エンドポイントの作成」です。  
+[公開エンドポイントの作成は別途READMEで説明](#cloudflare-workers-にエンドポイントを公開設定する方法)しています。  
+公開エンドポイントを設定できれば、`chatbot`にある`ChatBot.tsx`コンポーネントを読み込むだけで利用できます。
 
-バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
-現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
+- 参考：[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/libraries?hl=ja)
+- 参考：[Google GenAI SDK に移行する](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)
+
+---
+
+> [!NOTE]
+> - サンプルは「ガチャピンとムック」に関するRAGです  
+> `public/gachapin_mukku_rag.md`というマークダウンファイルを一次資料として扱うように`src/chatbot/constance/prompt.ts`でプロンプト設定しています。
+
+### 必要なライブラリ
+- @tailwindcss/vite@4.2.0
+- tailwindcss@4.2.0
+    - [公式ドキュメント](https://tailwindcss.com/docs/installation/using-vite)に従って、`vite.config.ts`や`CSS`ファイルへの設定（工程3, 4）が別途必要
+- react-markdown@10.1.0
+
+### 必要な設定ファイル
+- `.env`
+```bash
+VITE_WORKER_ENDPOINT = あなたの公開エンドポイント
+```
+
+### 簡易的なRAGとは？
+20p ほどの pdfファイルなら耐えられるが、それ以上の規模感になると LangChain の使用が適切です。  
+※LangChain： ChatGPTなどの大規模言語モデル（LLM）を外部データやツールと連携させ、高度なAIアプリを簡単に開発できるオープンソースのフレームワーク
 
 ---
 
 > [!NOTE]
 > フロントエンドとバックエンドが共存するモノレポです。  
 > - フロントエンド： `src`（React / vite）
-> - バックエンド： `gemini-proxy`（hono / Cloudflare workers）
+> - バックエンド： `gemini-proxy`（hono / Cloudflare workers）  
+> バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
+> 現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
 
 ## フロントエンド関連の設定ファイル
-
 - `src/constance/prompt.ts`  
 フロントエンドで使用するモデルやエンドポイント、メタプロンプトの設定箇所ファイル。  
 ※ファイル内の`GEMINI_MODEL`, `GEMINI_API_KEY`, `GEMINI_ENDPOINT_URL`は`src/hooks/useGenerateChat_OnlyTxt.ts`用の変数です。
@@ -38,7 +67,6 @@
 フロントエンド用の`GEMINI_API_KEY`の設定と、Cloudflare Workers のエンドポイントの設定を担う環境変数ファイル。
 
 ## バックエンド（hono / Cloudflare workers）関連の設定ファイル
-
 - `gemini-proxy/src/index.ts`  
 バックエンド用のindexファイル。CORSをホワイトリスト設定する際に調整が必要（※現在はどこからでもアクセスを受け付ける仕様）
 
@@ -58,9 +86,9 @@
 
 ## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.2
-- @google/genai@1.41.0
+- @google/genai@1.42.0
 - @tailwindcss/vite@4.2.0
-- @types/node@25.2.3
+- @types/node@25.3.0
 - @types/react-dom@19.2.3
 - @types/react@19.2.14
 - @vitejs/plugin-react@5.1.4
@@ -99,8 +127,9 @@ VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： https://<Wo
 ```
 
 > [!IMPORTANT]
-> - ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
 > - ※ viteプロジェクトなので`VITE_`のプレフィックスが必要
+> - ※`VITE_`プレフィックスを持つ環境変数は`NEXT_PUBLIC_`プレフィックス同様「クライアントサイドに露出」する
+> - ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
 
 ### 2. バックエンド側のディレクトリルートに`.dev.vars`ファイルを用意
 - `.dev.vars`  
@@ -124,7 +153,6 @@ npm run dev
 
 `Ready on http://localhost:8787`と表示されればOK。  
 **このターミナルは開いたままに**しておく。
-
 
 #### フロントエンド (React) の起動
 1. 別のターミナルを開いて、プロジェクトのルートにいることを確認。バックエンド側のディレクトリ（`gemini-proxy `）ではなく親フォルダにいることを確認する。
@@ -225,85 +253,5 @@ VITE_WORKER_ENDPOINT = "https://gemini-proxy.あなたのアカウント.workers
 つまり以下は気にする必要がありません。    
 
 - すでに稼働している「Gemini API ゲートウェイ（`VITE_WORKER_ENDPOINT`）」は、共通のAPIサーバーとして機能
-	- ※当プロジェクトでGeminiの挙動を変更（例：画像や動画生成モード）した場合は公開エンドポイントを利用する全てに影響が出るので注意
+	- ※当プロジェクトで Gemini の挙動を変更（例：画像や動画生成モード）した場合は公開エンドポイントを利用する全てに影響が出るので注意
 - 新しいSPA側でバックエンドのコード（Hono や Cloudflare Workers の設定）を気にする必要は一切なし
-
-### エンドポイントを使いたいSPA側（フロントエンド）での実装例
-```ts
-// 既存の公開エンドポイント
-const API_URL = import.meta.env.VITE_WORKER_ENDPOINT;
-
-async function askGemini(
-	thePromtMessage: string,
-	imageParts?: ImagePart[] // SPA側で`ImagePart`型を別途定義
-):Promise<string> {
-  // 1. エンドポイントを叩く（これだけでOK！）
-  const response = await fetch(API_URL, {
-    method: "POST", // Gemini に質問（データ投稿）するので POSTメソッドを指定
-    headers: { "Content-Type": "application/json" },
-    // ※`body`の中身はバックエンドの受付仕様に合わせる
-	body: JSON.stringify({
-      prompt: thePromtMessage,
-      imageParts: imageParts ?? [] // 画像がない場合は「空の配列」を渡す（※画像やpdfなどは別途ファイルアップロード機能をSPA側で用意して、その処理結果を imageParts キーに指定する）
-    })
-  });
-
-  // 2. 返ってきたJSONを受け取る
-  const data = await response.json();
-  
-  // 3. 画面に表示する（data.text に回答が入っている想定）
-  console.log("Geminiからの回答:", data.text);
-  return data.text;
-}
-```
-
-<details>
-<summary>ImagePart型と変換用のヘルパー関数</summary>
-
-- ImagePart型
-```ts
-// Gemini API に送るための画像/PDFデータの型定義
-export type ImagePart = {
-  inlineData: {
-    data: string;       // Base64エンコードされた文字列（"data:image/png;base64," のプレフィックスは削除したもの）
-    mimeType: string;   // "image/jpeg", "image/png", "application/pdf" など
-  };
-};
-```
-
-- 変換用のヘルパー関数
-```ts
-/**
- * ブラウザのFileオブジェクトをGemini用のImagePart型に変換するヘルパー関数
- */
-export const fileToImagePart = (file: File): Promise<ImagePart> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      
-      // reader.result は "data:image/png;base64,iVBOR..." の形式になるため
-      // 先頭の "data:xxx/xxx;base64," 部分を取り除いて純粋なデータだけにする
-      const base64Data = base64String.split(',')[1];
-      
-      if (!base64Data) {
-        reject(new Error("Base64変換に失敗しました"));
-        return;
-      }
-
-      resolve({
-        inlineData: {
-          data: base64Data,
-          mimeType: file.type
-        }
-      });
-    };
-
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
-```
-
-</details>

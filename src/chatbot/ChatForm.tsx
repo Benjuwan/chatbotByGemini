@@ -1,29 +1,21 @@
 import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
-import type { chatMessageType, filePreviewType, imagePartsType } from "../types/theChatBotType";
+import type { chatFormPropsType, filePreviewType, imagePartsType } from "./type/GeminiType";
 import { FileUploader } from "./FileUploader";
-import { useGenerateChat } from "../hooks/useGenerateChat";
-import { useHandleInputValueSanitize } from "../hooks/useHandleInputValueSanitize";
-import { useCheckDesktopView } from "../hooks/useCheckDesktopView";
-
-type chatFormPropsType = {
-    loading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    chatHistory: chatMessageType[];
-    setChatHistory: React.Dispatch<React.SetStateAction<chatMessageType[]>>;
-    handleChatView?: () => void;
-};
+import { useGenerateChat } from "./hooks/useGenerateChat";
+import { useHandleInputValueSanitize } from "./hooks/useHandleInputValueSanitize";
+import { useCheckDesktopView } from "./hooks/useCheckDesktopView";
 
 export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     const { loading, setLoading, chatHistory, setChatHistory, handleChatView } = props;
 
-    const [input, setInput] = useState<string>("");
+    const { generateChat } = useGenerateChat();
+    const { isDesktopView } = useCheckDesktopView();
+    const { handleInputValueSanitize } = useHandleInputValueSanitize();
+
     const [filePreviews, setFilePreviews] = useState<filePreviewType[]>([]);
 
-    const { generateChat } = useGenerateChat();
-    const { handleInputValueSanitize } = useHandleInputValueSanitize();
-    const { isDesktopView } = useCheckDesktopView();
-
-    const handlePromptSanitize = (e: SyntheticEvent<HTMLTextAreaElement>): void => {
+    const [input, setInput] = useState<string>("");
+    const handleInput = (e: SyntheticEvent<HTMLTextAreaElement>): void => {
         const sanitizedPrompt = handleInputValueSanitize(e.currentTarget.value);
         setInput(sanitizedPrompt);
     }
@@ -38,6 +30,7 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
         }));
     }, [filePreviews]);
 
+    // 送信ボタンによるチャット生成
     const handleSubmit = (e: ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault();
         generateChat(
@@ -67,13 +60,11 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
 
     return (
         <form onSubmit={handleSubmit} className={`p-4 bg-[#eaeaea] rounded border border-[#c5c5c5] lg:w-[48%] ${chatHistory.length > 1 ? "sticky top-4" : ""}`}>
-            {isDesktopView &&
-                <p className="mb-2 text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>
-            }
+            {isDesktopView && <p className="mb-2 text-xs">※パソコン操作の場合： 入力後に「com/ctrl + shift + enter キー押下」で送信可能</p>}
             {handleChatView &&
                 <div className="flex justify-end"><button type="button" onClick={handleChatView} className="cursor-pointer mb-2 text-[#d90f0f] underline text-xs hover:no-underline active:no-underline">チャットを閉じる</button></div>
             }
-            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 lg:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e: SyntheticEvent<HTMLTextAreaElement>) => handlePromptSanitize(e)}>&nbsp;</textarea>
+            <textarea className="text-base pl-[.25em] w-full h-[50vw] max-h-96 border border-[#bebebe] rounded mb-4 lg:h-[clamp(80px,50vh,240px)]" onKeyDown={handleKeydown} name="entryUserMess" value={input} disabled={loading} onChange={(e: SyntheticEvent<HTMLTextAreaElement>) => handleInput(e)}>&nbsp;</textarea>
             <FileUploader props={{
                 loading: loading,
                 filePreviews: filePreviews,

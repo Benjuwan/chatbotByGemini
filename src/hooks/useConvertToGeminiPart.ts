@@ -1,9 +1,9 @@
 import type { BlobImageUnion, Part } from "@google/genai";
-import type { getAIReadyDataType } from "../types/theChatBotType";
+import type { imagePartsType } from "../types/theChatBotType";
 
 export const useConvertToGeminiPart = () => {
-    // getAIReadyDataType を Gemini API の Part 形式に変換
-    const convertToGeminiPart = (fileData: getAIReadyDataType | null): Part | undefined => {
+    // imagePartsType を Gemini API の Part 形式に変換
+    const convertToGeminiPart = (fileData: imagePartsType | null): Part | undefined => {
         if (!fileData || !fileData.base64Data) {
             return undefined
         }
