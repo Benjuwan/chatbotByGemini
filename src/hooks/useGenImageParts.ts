@@ -1,13 +1,13 @@
 import type { Part } from "@google/genai";
-import type { getAIReadyDataType } from "../types/theChatBotType";
+import type { imagePartsType } from "../types/theChatBotType";
 import { useConvertToGeminiPart } from "./useConvertToGeminiPart";
 
 export const useGenImageParts = () => {
-    // getAIReadyDataType を Gemini API の Part 形式に変換するカスタムフック
+    // imagePartsType を Gemini API の Part 形式に変換するカスタムフック
     const { convertToGeminiPart } = useConvertToGeminiPart();
 
     // 添付画像の有無を判断すると共にそれらをAIが処理できる形に変換
-    const genImageParts = (fileData?: getAIReadyDataType[]): Part[] | undefined => {
+    const genImageParts = (fileData?: imagePartsType[]): Part[] | undefined => {
         if (typeof fileData === 'undefined') {
             return undefined;
         }

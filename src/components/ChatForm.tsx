@@ -1,5 +1,5 @@
 import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
-import type { chatMessageType, filePreviewType, getAIReadyDataType } from "../types/theChatBotType";
+import type { chatMessageType, filePreviewType, imagePartsType } from "../types/theChatBotType";
 import { FileUploader } from "./FileUploader";
 import { useGenerateChat } from "../hooks/useGenerateChat";
 import { useHandleInputValueSanitize } from "../hooks/useHandleInputValueSanitize";
@@ -29,7 +29,7 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
     }
 
     // AI解析用に調整したファイル情報
-    const getAIReadyData: getAIReadyDataType[] = useMemo(() => {
+    const imageParts: imagePartsType[] = useMemo(() => {
         return filePreviews.map(fileItem => ({
             name: fileItem.file.name,
             type: fileItem.file.type,
@@ -44,7 +44,7 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
             setLoading,
             chatHistory, setChatHistory,
             input, setInput,
-            getAIReadyData
+            imageParts
         );
     }
 
@@ -60,7 +60,7 @@ export const ChatForm = ({ props }: { props: chatFormPropsType }) => {
                 setLoading,
                 chatHistory, setChatHistory,
                 input, setInput,
-                getAIReadyData
+                imageParts
             );
         }
     }

@@ -1,4 +1,4 @@
-import type { chatMessageType, getAIReadyDataType } from "../types/theChatBotType";
+import type { chatMessageType, imagePartsType } from "../types/theChatBotType";
 import { useAdjustPromptMess } from "./useAdjustPromptMess";
 
 export const useGenerateChat = () => {
@@ -12,7 +12,7 @@ export const useGenerateChat = () => {
         setChatHistory: React.Dispatch<React.SetStateAction<chatMessageType[]>>,
         input: string,
         setInput: React.Dispatch<React.SetStateAction<string>>,
-        getAIReadyData?: getAIReadyDataType[],
+        imageParts?: imagePartsType[],
     ): Promise<void> => {
         setLoading(true);
 
@@ -22,7 +22,7 @@ export const useGenerateChat = () => {
 
         try {
             // プロンプト生成（調整）処理
-            const receivedBotAnswer = await adjustPromptMess(chatHistory, input, getAIReadyData);
+            const receivedBotAnswer = await adjustPromptMess(chatHistory, input, imageParts);
 
             // 生成されたボットのメッセージを作成
             const botMessage = {
@@ -35,7 +35,6 @@ export const useGenerateChat = () => {
         } catch {
             console.error('Google API error occurred. | `useGenerateChat.ts`');
         } finally {
-            // 初期化処理
             setLoading(false);
             setInput("");
         }

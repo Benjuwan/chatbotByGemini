@@ -28,7 +28,7 @@ app.use('/*', cors());
 // `src/constance/prompt.ts`の WORKER_ENDPOINT を叩く
 app.post('/api/generate', async (c) => {
   try {
-    // リクエストボディの取得
+    // リクエストボディの取得（`prompt`,`model`,`imageParts`を受け付ける）
     const { prompt, model = GEMINI_MODEL, imageParts } = await c.req.json();
 
     // APIキーの確認

@@ -1,6 +1,6 @@
 import type { Part } from "@google/genai";
 import { WORKER_ENDPOINT } from "../constance/prompt";
-import type { getAIReadyDataType } from "../types/theChatBotType";
+import type { imagePartsType } from "../types/theChatBotType";
 import { useGenImageParts } from "./useGenImageParts";
 
 export const useGenAiAnswerByVisualTxt = () => {
@@ -9,7 +9,7 @@ export const useGenAiAnswerByVisualTxt = () => {
     const genAiAnswerByVisualTxt = async (
         input: string,
         thePromtMessage: string,
-        fileData?: getAIReadyDataType[]
+        fileData?: imagePartsType[]
     ): Promise<string> => {
         // 複数画像添付の判断材料（プロンプト内にこれらの単語が含まれているかどうか）
         const targetKeywords: string[] = ['複数', '多く', 'さっきの', '先程の', '直前の', 'これら', 'それら', 'たくさんの', '様々な', 'いろいろな'];
@@ -33,7 +33,7 @@ export const useGenAiAnswerByVisualTxt = () => {
                 }
             }
 
-            // Cloudflare Workers API を叩く
+            // Cloudflare Workers API（`gemini-proxy/src/index.ts`）を叩く
             const response = await fetch(WORKER_ENDPOINT, {
                 method: 'POST',
                 headers: {
