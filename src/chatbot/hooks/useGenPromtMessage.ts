@@ -14,7 +14,7 @@ const _geminiCall = async (thePromtMessage: string, imageParts?: imagePartsType[
         // ※`body`の中身はバックエンドの受付仕様に合わせる
         body: JSON.stringify({
             prompt: thePromtMessage,
-            model: "gemini-3-pro-preview", // モデル設定
+            // model: "gemini-3-flash-preview", // モデル設定（※設定すると500エラーが出る時もあるのでデフォルトでは無効化）
             imageParts: (imageParts ?? []).map((img) => ({
                 // Gemini SDK が期待する画像処理データ構造の形で渡す
                 inlineData: {
@@ -70,7 +70,8 @@ export const useGenPromtMessage = () => {
         if (IS_DEV) {
             console.log(thePromtMessage);
 
-            if (imageParts) {
+            // 画像やpdfファイルの有無を確認
+            if (imageParts && imageParts.length > 0) {
                 console.log(imageParts);
             }
         }
