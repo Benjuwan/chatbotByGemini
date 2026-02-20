@@ -17,40 +17,6 @@
 ![デモキャプチャ4](./public/img/guide-04.png)
 - 先ほどの Gemini 回答にあった資料3pに**無料**という記載が確認できます
 
-## 簡易的なRAG（検索拡張生成）
-当リポジトリのチャットボットは簡易的なRAG（検索拡張生成）としても扱えます。  
-React, TypeScript, Vite を前提としていて、`src/chatbot`は簡単に実装できるファイルセットです。  
-実装（利用）に必要なのは「1. Gemini の APIキー」と「2. 公開エンドポイントの作成」です。  
-[公開エンドポイントの作成は別途READMEで説明](#cloudflare-workers-にエンドポイントを公開設定する方法)しています。  
-公開エンドポイントを設定できれば、`chatbot`にある`ChatBot.tsx`コンポーネントを読み込むだけで利用できます。
-
-- 参考：[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/libraries?hl=ja)
-- 参考：[Google GenAI SDK に移行する](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)
-
----
-
-> [!NOTE]
-> - サンプルは「ガチャピンとムック」に関するRAGです  
-> `public/gachapin_mukku_rag.md`というマークダウンファイルを一次資料として扱うように`src/chatbot/constance/prompt.ts`でプロンプト設定しています。
-
-### 必要なライブラリ
-- @tailwindcss/vite@4.2.0
-- tailwindcss@4.2.0
-    - [公式ドキュメント](https://tailwindcss.com/docs/installation/using-vite)に従って、`vite.config.ts`や`CSS`ファイルへの設定（工程3, 4）が別途必要
-- react-markdown@10.1.0
-
-### 必要な設定ファイル
-- `.env`
-```bash
-VITE_WORKER_ENDPOINT = あなたの公開エンドポイント
-```
-
-### 簡易的なRAGとは？
-20p ほどの pdfファイルなら耐えられるが、それ以上の規模感になると LangChain の使用が適切です。  
-※LangChain： ChatGPTなどの大規模言語モデル（LLM）を外部データやツールと連携させ、高度なAIアプリを簡単に開発できるオープンソースのフレームワーク
-
----
-
 > [!NOTE]
 > フロントエンドとバックエンドが共存するモノレポです。  
 > - フロントエンド： `src`（React / vite）
@@ -163,6 +129,38 @@ npm run dev
 
 `Local: http://localhost:5173`などが表示されればOK  
 上記にアクセスしてチャットボットに問いかけてみてください。
+
+## 簡易的なRAG（検索拡張生成）
+当リポジトリのチャットボットは簡易的なRAG（検索拡張生成）としても扱えます。  
+React, TypeScript, Vite を前提としていて、`src/chatbot`は簡単に実装できるファイルセットです。  
+実装（利用）に必要なのは「1. Gemini の APIキー」と「2. 公開エンドポイントの作成」です。  
+[公開エンドポイントの作成は別途READMEで説明](#cloudflare-workers-にエンドポイントを公開設定する方法)しています。  
+公開エンドポイントを設定できれば、`chatbot`にある`ChatBot.tsx`コンポーネントを読み込むだけで利用できます。
+
+- 参考：[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/libraries?hl=ja)
+- 参考：[Google GenAI SDK に移行する](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)
+
+---
+
+> [!NOTE]
+> - サンプルは「ガチャピンとムック」に関するRAGです  
+> `public/gachapin_mukku_rag.md`というマークダウンファイルを一次資料として扱うように`src/chatbot/constance/prompt.ts`でプロンプト設定しています。
+
+### 必要なライブラリ
+- @tailwindcss/vite@4.2.0
+- tailwindcss@4.2.0
+    - [公式ドキュメント](https://tailwindcss.com/docs/installation/using-vite)に従って、`vite.config.ts`や`CSS`ファイルへの設定（工程3, 4）が別途必要
+- react-markdown@10.1.0
+
+### 必要な設定ファイル
+- `.env`
+```bash
+VITE_WORKER_ENDPOINT = 設定した公開エンドポイント
+```
+
+### 簡易的なRAGとは？
+20p ほどの pdfファイルなら耐えられるが、それ以上の規模感になると LangChain の使用が適切です。  
+※LangChain： ChatGPTなどの大規模言語モデル（LLM）を外部データやツールと連携させ、高度なAIアプリを簡単に開発できるオープンソースのフレームワーク
 
 ## Cloudflare Workers にエンドポイントを公開・設定する方法
 ※Cloudflare のアカウントが必須です。
