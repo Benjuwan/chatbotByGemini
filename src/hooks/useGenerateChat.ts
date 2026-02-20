@@ -17,8 +17,13 @@ export const useGenerateChat = () => {
         setLoading(true);
 
         const userMessage: chatMessageType = { role: "user", content: input };
+
+        // これまでのやり取りが5往復以上の場合は直近5件分にカットオフ
+        // ※以前のやり取り内容の一部が消えてしまうものの、情報量の圧縮及びトークン消費軽減の観点からカットオフ実施
+        const everChatHisitory = chatHistory.length > 5 ? [...chatHistory].slice(-5) : [...chatHistory];
+
         // 画面上の会話履歴を更新
-        const updatedChatHistory = [...chatHistory, userMessage];
+        const updatedChatHistory = [...everChatHisitory, userMessage];
 
         try {
             // プロンプト生成（調整）処理
