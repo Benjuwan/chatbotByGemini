@@ -1,6 +1,6 @@
 # chatbot by Gemini
 `Gemini API`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
-[簡易的なRAG（検索拡張生成）としても扱えます](#簡易的なrag検索拡張生成) 
+[簡易的なRAG（検索拡張生成）としても扱えます](./src/chatbot/READEME.md) 
 
 ## PDFファイルの読み取りから質疑応答のデモキャプチャ
 ![デモキャプチャ1](./public/img/guide-01.png)
@@ -73,8 +73,8 @@
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.11.10
-- wrangler@4.66.0
+- hono@4.12.0
+- wrangler@4.67.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
@@ -129,38 +129,6 @@ npm run dev
 
 `Local: http://localhost:5173`などが表示されればOK  
 上記にアクセスしてチャットボットに問いかけてみてください。
-
-## 簡易的なRAG（検索拡張生成）
-当リポジトリのチャットボットは簡易的なRAG（検索拡張生成）としても扱えます。  
-React, TypeScript, Vite を前提としていて、`src/chatbot`は簡単に実装できるファイルセットです。  
-実装（利用）に必要なのは「1. Gemini の APIキー」と「2. 公開エンドポイントの作成」です。  
-[公開エンドポイントの作成は別途READMEで説明](#cloudflare-workers-にエンドポイントを公開設定する方法)しています。  
-公開エンドポイントを設定できれば、`chatbot`にある`ChatBot.tsx`コンポーネントを読み込むだけで利用できます。
-
-- 参考：[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/libraries?hl=ja)
-- 参考：[Google GenAI SDK に移行する](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)
-
----
-
-> [!NOTE]
-> - サンプルは「ガチャピンとムック」に関するRAGです  
-> `public/gachapin_mukku_rag.md`というマークダウンファイルを一次資料として扱うように`src/chatbot/constance/prompt.ts`でプロンプト設定しています。
-
-### 必要なライブラリ
-- @tailwindcss/vite@4.2.0
-- tailwindcss@4.2.0
-    - [公式ドキュメント](https://tailwindcss.com/docs/installation/using-vite)に従って、`vite.config.ts`や`CSS`ファイルへの設定（工程3, 4）が別途必要
-- react-markdown@10.1.0
-
-### 必要な設定ファイル
-- `.env`
-```bash
-VITE_WORKER_ENDPOINT = 設定した公開エンドポイント
-```
-
-### 簡易的なRAGとは？
-20p ほどの pdfファイルなら耐えられるが、それ以上の規模感になると LangChain の使用が適切です。  
-※LangChain： ChatGPTなどの大規模言語モデル（LLM）を外部データやツールと連携させ、高度なAIアプリを簡単に開発できるオープンソースのフレームワーク
 
 ## Cloudflare Workers にエンドポイントを公開・設定する方法
 ※Cloudflare のアカウントが必須です。
