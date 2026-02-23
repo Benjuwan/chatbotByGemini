@@ -60,7 +60,7 @@
 - @vitejs/plugin-react@5.1.4
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
-- eslint-plugin-react-refresh@0.5.0
+- eslint-plugin-react-refresh@0.5.1
 - eslint-plugin-react@7.37.5
 - eslint@9.39.3
 - globals@17.3.0
@@ -73,7 +73,7 @@
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.12.1
+- hono@4.12.2
 - wrangler@4.67.0
 
 > [!NOTE]
