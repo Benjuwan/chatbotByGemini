@@ -51,7 +51,7 @@
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成（フロントエンド：`src`）
-- @eslint/js@9.39.2
+- @eslint/js@9.39.3
 - @google/genai@1.42.0
 - @tailwindcss/vite@4.2.0
 - @types/node@25.3.0
@@ -62,7 +62,7 @@
 - eslint-plugin-react-hooks@7.0.1
 - eslint-plugin-react-refresh@0.5.0
 - eslint-plugin-react@7.37.5
-- eslint@9.39.2
+- eslint@9.39.3
 - globals@17.3.0
 - react-dom@19.2.4
 - react-markdown@10.1.0
@@ -73,7 +73,7 @@
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.12.0
+- hono@4.12.1
 - wrangler@4.67.0
 
 > [!NOTE]
