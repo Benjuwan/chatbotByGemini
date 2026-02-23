@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { GEMINI_MODEL } from './config/theConfig';
+import { promptInjectionDetector } from './hooks/promptInjectionDetector';
 
 // 環境変数の型定義
 type Bindings = {
@@ -40,6 +41,20 @@ app.post('/api/generate', async (c) => {
     // 新SDK： [Gemini API のクイックスタート](https://ai.google.dev/gemini-api/docs/quickstart?lang=node&hl=ja)を利用 -> `import { GoogleGenAI } from "@google/genai";`
 
     const genAI = new GoogleGenAI({ apiKey: c.env.GEMINI_API_KEY });
+
+    const checkPromptInjection = promptInjectionDetector(prompt);
+    if (checkPromptInjection.isInjection) {
+      const errorMess = `不正なプロンプトを検出 | 
+          isInjection： ${checkPromptInjection.isInjection}
+          matchedPatterns： ${JSON.stringify(checkPromptInjection.matchedPatterns)}
+          normalizedInput： ${checkPromptInjection.normalizedInput}
+        `;
+      console.error(errorMess);
+
+      return c.json({
+        error: errorMess
+      }, 400); // 400 Bad Request を指定 
+    }
 
     const result = await genAI.models.generateContent({
       model: model,
