@@ -9,6 +9,7 @@ export const useGenerateChatOnlyTxt = () => {
     const { adjustPromptMess } = useAdjustPromptMess();
 
     // チャットメッセージの生成機能（AIと文字だけのやり取りで良い場合はこのコードでも対応可能）
+    //【重要】クライアントサイドにAPIキーが露出することになるため本番環境など実務では決して使用しないでください
 
     /**
      *【目的】Google GenAI SDKの将来的な変更に備えて標準的な実装を残しておく

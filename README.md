@@ -69,10 +69,10 @@ npx wrangler deploy
 バックエンド側（hono / Cloudflare Workers）の働きで Gemini API の公開エンドポイントを発行している仕組みです。  
 ですので、どこからでも Gemini API を呼び出せるようになります。  
 つまり、ロジック部分（例：バックエンド部分）は流用せずとも`VITE_WORKER_ENDPOINT`を fetch API で叩くというシンプルな実装イメージで Gemini API のレスポンスjsonが返ってくるイメージです。  
-具体例としては[簡易的なRAG（検索拡張生成）としても扱えます](./src/chatbot/READEME.md) を参照してください。  
+具体例としては [「簡易的なRAG（検索拡張生成）としても扱えます」](./src/chatbot/READEME.md) を参照してください。  
 
 > [!IMPORTANT]
-> 公開エンドポイントを叩くには、設定した公開エンドポイント（`https://gemini-proxy.あなたのアカウント.workers.dev`）の末尾にパスをエンドポイントパスを指定する必要がある  
+> 公開エンドポイントを叩くには、設定した公開エンドポイント（`https://gemini-proxy.あなたのアカウント.workers.dev`）の末尾にエンドポイントパスを指定する必要がある  
 ```js
 // 当リポジトリの設定だと`/api/generate`が末尾に必要となる
 // `gemini-proxy/src/index.ts`で設定したエンドポイントパス
