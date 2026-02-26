@@ -4,7 +4,7 @@ import type { chatMessageType, imagePartsType } from "../type/GeminiType";
 // Vite が標準で提供している import.meta.env.DEV を使うと、npm run dev の時は true、ビルド後は false に自動で切り替わる
 const IS_DEV: boolean = import.meta.env.DEV;
 
-const _geminiCall = async (thePromtMessage: string, imageParts?: imagePartsType[]) => {
+const _geminiCall = async (thePromtMessage: string, imageParts?: imagePartsType[]): Promise<string> => {
     // Cloudflare Workers に置いている Gemini API の公開エンドポイント
     const API_URL = import.meta.env.VITE_WORKER_ENDPOINT;
 
