@@ -17,14 +17,22 @@
 ![デモキャプチャ4](./public/img/guide-04.png)
 - 先ほどの Gemini 回答にあった資料3pに**無料**という記載が確認できます
 
-> [!NOTE]
-> フロントエンドとバックエンドが共存するモノレポです。  
-> - フロントエンド： `src`（React / vite）
-> - バックエンド： `gemini-proxy`（hono / Cloudflare workers）  
-> バックエンド側の設定は`gemini-proxy/src/config/theConfig.ts`です。  
-> 現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
+---
 
-## フロントエンド関連の設定ファイル
+## フロントエンドとバックエンドが共存するモノレポ構成
+バックエンド側（hono / Cloudflare Workers）の働きで「Gemini API の公開エンドポイントを発行」している仕組みです。    
+
+つまり、別プロジェクトでSPAとして利用する場合、以下は気にする必要がありません。    
+- 「公開エンドポイント（= Gemini API ゲートウェイ）」は共通のAPIサーバーとして機能
+	- Gemini の挙動（バックエンド側のロジック）を変更（例：画像や動画生成モード）した場合は公開エンドポイントを利用する全てに影響が出るので注意
+- 新しいSPA側でバックエンドのコード（Hono や Cloudflare Workers の設定）を気にする必要は一切なし
+
+[※テキスト専用チャットボットを試したい場合はバックエンド側は不要で、Gemini API キーのみあればすぐに使用・試用可能](#画像やpdfファイルの読み取り機能が必要ないテキスト専用チャットボットの場合)です。
+
+### フロントエンド：
+`src`（React / TypeScript / Vite）
+
+#### フロントエンド関連の設定ファイル
 - `src/constance/prompt.ts`  
 フロントエンドで使用するモデルやエンドポイント、メタプロンプトの設定箇所ファイル。  
 ※ファイル内の`GEMINI_MODEL`, `GEMINI_API_KEY`, `GEMINI_ENDPOINT_URL`は`src/hooks/useGenerateChat_OnlyTxt.ts`用の変数です。
@@ -32,9 +40,15 @@
 - `.env`  
 フロントエンド用の`GEMINI_API_KEY`の設定と、Cloudflare Workers のエンドポイントの設定を担う環境変数ファイル。
 
-## バックエンド（hono / Cloudflare workers）関連の設定ファイル
+### バックエンド：
+`gemini-proxy`（hono / Cloudflare Workers）  
+
+#### バックエンド関連の設定ファイル
 - `gemini-proxy/src/index.ts`  
 バックエンド用のindexファイル。CORSをホワイトリスト設定する際に調整が必要（※現在はどこからでもアクセスを受け付ける仕様）
+
+> [!NOTE]
+> 現状全てのリクエストを受け付ける設定になっているので、エンドポイントアクセスへのホワイトリストを設定したい場合は`gemini-proxy/src/index.ts`内のCORS設定を調整（コメントアウトの有効化）してください。
 
 - `gemini-proxy/src/config/theConfig.ts`  
 バックエンド用のモデル選定や、CORSのホワイトリストを設定するための設定ファイル。
@@ -42,39 +56,63 @@
 - `gemini-proxy/.dev.vars`  
 バックエンド用の`GEMINI_API_KEY`の設定ファイル。
 
+> [!IMPORTANT]
+> #### バックエンド側のファイルを修正した場合は再度 Cloudflare Workers へのデプロイが必要
+> バックエンド側のファイル（例：`gemini-proxy/src/index.ts`）を修正した場合は、Cloudflare Workers への再デプロイが必要になります。  
+> これによって、Cloudflare Workers 上のコードが更新されるので、 [フロントエンド側から呼び出す時も新しいコードが反映された状態で呼び出せる](#フロントエンド側から呼び出す時も新しいコードが反映された状態で呼び出せる)ようになります。  
+> `gemini-proxy`にいる状態で以下のコマンドを実施  
+```bash
+npx wrangler deploy
+```
+
+##### フロントエンド側から呼び出す時も新しいコードが反映された状態で呼び出せる
+バックエンド側（hono / Cloudflare Workers）の働きで Gemini API の公開エンドポイントを発行している仕組みです。  
+ですので、どこからでも Gemini API を呼び出せるようになります。  
+つまり、ロジック部分（例：バックエンド部分）は流用せずとも`VITE_WORKER_ENDPOINT`を fetch API で叩くというシンプルな実装イメージで Gemini API のレスポンスjsonが返ってくるイメージです。  
+具体例としては[簡易的なRAG（検索拡張生成）としても扱えます](./src/chatbot/READEME.md) を参照してください。  
+
+> [!IMPORTANT]
+> 公開エンドポイントを叩くには、設定した公開エンドポイント（`https://gemini-proxy.あなたのアカウント.workers.dev`）の末尾にパスをエンドポイントパスを指定する必要がある  
+```js
+// 当リポジトリの設定だと`/api/generate`が末尾に必要となる
+// `gemini-proxy/src/index.ts`で設定したエンドポイントパス
+VITE_WORKER_ENDPOINT = "https://gemini-proxy.あなたのアカウント.workers.dev/api/generate"
+```
+
 ---
 
+## 画像やPDFファイルの読み取り機能が必要ない（テキスト専用チャットボットの）場合
+
 > [!NOTE]
-> - **画像やPDFファイルを通じたやり取りが必要ない場合**  
-> 現状の実装（[Google GenAI SDK](https://ai.google.dev/gemini-api/docs/migrate?hl=ja)）でも問題ないですが`src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び調整することでテキスト専用チャットボットになります。  
-> この際、バックエンド側の起動は不要となります。しかし、 **クライアントサイドにAPIキーが露出することになるため本番環境など実務では決して使用しない**でください。  
+> `src/components/ChatForm.tsx`内の`useGenerateChat`カスタムフックを`useGenerateChat_OnlyTxt`に変更及び適宜調整することでテキスト専用チャットボットになります。  
+> この際、バックエンド側の起動は不要となります。しかし、 **クライアントサイドにAPIキーが露出することになるため本番環境など実務では決して使用しない** でください。  
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成（フロントエンド：`src`）
 - @eslint/js@9.39.3
-- @google/genai@1.42.0
-- @tailwindcss/vite@4.2.0
-- @types/node@25.3.0
+- @google/genai@1.43.0
+- @tailwindcss/vite@4.2.1
+- @types/node@25.3.1
 - @types/react-dom@19.2.3
 - @types/react@19.2.14
 - @vitejs/plugin-react@5.1.4
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
-- eslint-plugin-react-refresh@0.5.1
+- eslint-plugin-react-refresh@0.5.2
 - eslint-plugin-react@7.37.5
 - eslint@9.39.3
 - globals@17.3.0
 - react-dom@19.2.4
 - react-markdown@10.1.0
 - react@19.2.4
-- tailwindcss@4.2.0
-- typescript-eslint@8.56.0
+- tailwindcss@4.2.1
+- typescript-eslint@8.56.1
 - typescript@5.9.3
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
 - hono@4.12.2
-- wrangler@4.67.0
+- wrangler@4.68.1
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
@@ -84,12 +122,12 @@
 ---
 
 ## 必要な設定
-### 1. `.env`ファイルを用意
+### 1. ルートに`.env`ファイルを用意
 ※使用・試用には**GeminiのAPIキーと バックエンド実行環境（※Cloudflareを想定）が必要**となります
 
 ```bash
 VITE_GEMINI_API_KEY = GeminiのAPIキー
-VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： https://<Worker の名前>.<ランダムな文字列>.workers.dev）
+VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： <Worker の名前>.<ランダムな文字列>.workers.dev）
 ```
 
 > [!IMPORTANT]
@@ -97,7 +135,7 @@ VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： https://<Wo
 > - ※`VITE_`プレフィックスを持つ環境変数は`NEXT_PUBLIC_`プレフィックス同様「クライアントサイドに露出」する
 > - ※ viteの場合： `.env`ファイルのキー名は`""`でラップしたり、末尾に`;`を付けたりしない
 
-### 2. バックエンド側のディレクトリルートに`.dev.vars`ファイルを用意
+### 2. バックエンド（`gemini-proxy`）側のディレクトリルートに`.dev.vars`ファイルを用意
 - `.dev.vars`  
 バックエンド（Cloudflare Workers）を起動するツール（`wrangler`）だけが読む秘密のメモ帳
 ```bash
@@ -136,11 +174,11 @@ npm run dev
 > [!IMPORTANT]
 > ### 別アプリで（当リポジトリのような）エンドポイントを新たに公開（発行）したい場合
 > **※既に`gemini-proxy`で1つ以上を公開済みで、新たに別のエンドポイントを追加公開**したい場合  
-> 既存の`gemini-proxy`ディレクトリ（hono / Cloudflare workers）を利用すると**一部変更（`name`プロパティの値）するだけ**で簡単に Gemini API の新規エンドポイントを発行できる。  
+> 既存の`gemini-proxy`ディレクトリ（hono / Cloudflare Workers）を利用することで、 **一部変更（`name`プロパティの値）するだけ** で簡単に Gemini API の新規エンドポイントを発行できる。  
 > ただし、この**一部を修正しないと既存のエンドポイントが上書きされるリスクがある**ので注意。  
 > 既存の`gemini-proxy`ディレクトリを流用して  Gemini API の新規エンドポイントを発行するには`gemini-proxy/wrangler.jsonc`ファイルを編集する。
-> `gemini-proxy/wrangler.jsonc`ファイルを**一部変更**した後のフローは以下紹介のものと同じく、`npx wrangler deploy` -> `npx wrangler secret put <環境変数名>`で Cloudflare Workers に接続する  
-> - `gemini-proxy/wrangler.jsonc`（`name`プロパティの値を変更）
+> `gemini-proxy/wrangler.jsonc`ファイルを**一部変更**した後のフローは以下紹介のものと同じく、`npx wrangler deploy` -> `npx wrangler secret put <環境変数名>`で Cloudflare Workers に接続する。  
+> #### `gemini-proxy/wrangler.jsonc`（`name`プロパティの値を変更）
 ```diff
 /**
  * For more details on how to configure Wrangler, refer to:
@@ -177,7 +215,7 @@ npx wrangler secret put <環境変数名>
 ```
 
 1. このコマンドを打つと`Enter a secret value:`と聞かれる
-2. GeminiのAPIキーをペーストして`Enter`を押下で設定完了
+2. Gemini APIキーをペーストして`Enter`を押下で設定完了
 
 ---
 
@@ -203,21 +241,3 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 現在の設定（`gemini-proxy/src/index.ts`）では、公開エンドポイントは誰でもアクセス可能な状態なのでチャットボット機能を埋め込んだサイト（ページ）の開発者ツール（Network タブ）から公開エンドポイントが露出してしまいます。  
 APIキーはバックエンド側で管理するので漏れることは絶対にないですが、公開エンドポイントが見れることで Gemini API のタダ乗りが可能になります。  
 つまり、有料版を使用している場合はタダ乗りによって**API利用料が増加して従量課金が増えるリスク**があり、無料版の場合は**従量課金は発生しないものの429エラー（Too Many Requests）が出て使用できなくなるリスク**があります。
-
-## Gemini API のエンドポイントを別アプリ（例：SPA）で呼び出す方法
-今回エンドポイントを発行してどこからでも Gemini API を呼び出せるようになりました。  
-当プロジェクトの自作チャットボットを他のSPAとかに埋め込む場合は、ロジック部分（例：バックエンド部分）は流用せずとも`VITE_WORKER_ENDPOINT`を fetch API で叩くというシンプルな実装イメージで Gemini API のレスポンスjsonが返ってくるイメージです。
-
-> [!IMPORTANT]
-> エンドポイントを叩くには、設定した公開エンドポイント（`https://gemini-proxy.あなたのアカウント.workers.dev`）の末尾にパスをエンドポイントパスを指定する必要がある  
-```js
-// 当リポジトリの設定だと`/api/generate`が末尾に必要となる
-// `gemini-proxy/src/index.ts`で設定したエンドポイントパス
-VITE_WORKER_ENDPOINT = "https://gemini-proxy.あなたのアカウント.workers.dev/api/generate"
-```
-
-つまり以下は気にする必要がありません。    
-
-- すでに稼働している「Gemini API ゲートウェイ（`VITE_WORKER_ENDPOINT`）」は、共通のAPIサーバーとして機能
-	- ※当プロジェクトで Gemini の挙動を変更（例：画像や動画生成モード）した場合は公開エンドポイントを利用する全てに影響が出るので注意
-- 新しいSPA側でバックエンドのコード（Hono や Cloudflare Workers の設定）を気にする必要は一切なし
