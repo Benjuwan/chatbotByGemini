@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { ContentfulStatusCode } from 'hono/utils/http-status';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { GEMINI_MODEL } from './config/theConfig';
 import { promptInjectionDetector } from './hooks/promptInjectionDetector';
@@ -9,9 +10,24 @@ type Bindings = {
   GEMINI_API_KEY: string;
 };
 
+type ErrorStatusType = {
+  code: ContentfulStatusCode; // hono が提供する HTTP ステータスコードの型を使用
+  message: string;
+  status: string;
+};
+
+// error が ErrorStatusType 型であるかを判定する型ガード関数
+const _checkErrorStatusType = (error: unknown): error is ErrorStatusType => {
+  return error !== null && typeof error === "object" && (
+    Object.hasOwn(error, "code") ||
+    Object.hasOwn(error, "message") ||
+    Object.hasOwn(error, "status")
+  );
+}
+
 const app = new Hono<{ Bindings: Bindings }>();
 
-// -------------- CAOUTION | 現状はどこからでも受け付ける設定
+// -------------- CAUTION | 現状はどこからでも受け付ける設定
 app.use('/*', cors());
 
 // 許可ドメインを制御する場合は以下を有効化
@@ -70,8 +86,21 @@ app.post('/api/generate', async (c) => {
 
     return c.json({ text: result.text });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Worker API error:', error);
+
+    // `_checkErrorStatusType`関数が true を返したならスコープ（ifブロック）内では、
+    // 引数として渡された error は ErrorStatusType 型であると保証される
+    if (_checkErrorStatusType(error)) {
+      return c.json({
+        error: {
+          code: error.code,
+          message: error.message,
+          status: error.status,
+        },
+      }, error.code);
+    }
+
     return c.json({ error: String(error) }, 500);
   }
 });

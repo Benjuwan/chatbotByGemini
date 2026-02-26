@@ -31,10 +31,16 @@ const _geminiCall = async (thePromtMessage: string, imageParts?: imagePartsType[
 
     const data = await response.json();
 
-    const result = response.status === 429 ?
-        'Too Many Requests | リクエスト超過エラーです' :
-        response.status === 200 ?
-            data.text : 'リクエスト超過エラー、または不明なエラーが発生しました。時間を置いて再度お試しください。';
+    if (data.error) {
+        console.error(data.error);
+    }
+
+    // `data.error`の有無で Gemini の回答を調整（当該プロパティが無い場合は生成回答を返す）
+    const result = data.error ?
+        data.error.status === 429 ?
+            'Too Many Requests | リクエスト超過エラーです。' :
+            `Error Status [${data.error.status}] | 不明なエラーが発生しました。時間を置いて再度お試しください。` :
+        data.text;
 
     return result;
 }

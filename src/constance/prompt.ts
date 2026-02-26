@@ -16,7 +16,7 @@ export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 // ローカル開発時は`http://localhost:8787/api/generate`を使用
 export const WORKER_ENDPOINT = IS_DEV ?
     'http://localhost:8787/api/generate' :
-    `https://gemini-proxy.${import.meta.env.VITE_CLOUDFLARE_SUBDOMAIN}/api/generate`;
+    `https://${import.meta.env.VITE_CLOUDFLARE_SUBDOMAIN}/api/generate`;
 
 /* -------------------- 以下 憲法（システムプロンプト）内容 -------------------- */
 
