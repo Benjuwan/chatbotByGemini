@@ -23,6 +23,8 @@ React, TypeScript, Vite を前提としていて、`/chatbot`は簡単に実装�
 - `.env`  
 エンドポイントを設定する環境変数ファイル
 ```bash
+# 当リポジトリの`gemini-proxy/src/index.ts`で設定した
+# エンドポイントパス（`/api/generate`）を末尾に付ける必要があることに注意
 VITE_WORKER_ENDPOINT = 設定した公開エンドポイント
 ```
 

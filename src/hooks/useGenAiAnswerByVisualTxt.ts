@@ -50,7 +50,15 @@ export const useGenAiAnswerByVisualTxt = () => {
             }
 
             const data = await response.json();
-            return data.text ?? '回答がうまく生成されなかったようです。';
+
+            if (data.error) {
+                console.error(data.error);
+            }
+
+            return data.text ??
+                data.error ?
+                `Error Status [${data.error.status}] | リクエスト超過エラー、または不明なエラーが発生しました。時間を置いて再度お試しください。` :
+                '回答がうまく生成されなかったようです。';
         } catch {
             throw new Error('Google API error occurred. | `useGenAiAnswerByVisualTxt.ts`');
         }

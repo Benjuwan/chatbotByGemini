@@ -135,7 +135,7 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
                             </div>
                         ))}
                     </div>
-                    {filePreviews.length > 1 && <button className="text-[#333] bg-white border border-[#dadada] my-2 enabled:cursor-pointer enabled:hover:border-[#cc1515] enabled:hover:text-[#cc1515] p-2 rounded" type="button" disabled={loading} onClick={() => removeFile([])}>画像を一括リセット</button>}
+                    {filePreviews.length > 1 && <button className="text-[#333] bg-white border border-[#dadada] my-2 enabled:cursor-pointer enabled:hover:border-[#cc1515] enabled:hover:text-[#cc1515] p-2 rounded" type="button" disabled={loading} onClick={() => removeFile([])}>添付ファイルを一括リセット</button>}
                 </>
             }
         </>
