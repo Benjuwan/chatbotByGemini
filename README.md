@@ -76,7 +76,7 @@ npx wrangler deploy
 ```js
 // 当リポジトリの設定だと`/api/generate`が末尾に必要となる
 // `gemini-proxy/src/index.ts`で設定したエンドポイントパス
-VITE_WORKER_ENDPOINT = "https://gemini-proxy.あなたのアカウント.workers.dev/api/generate"
+VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.dev/api/generate
 ```
 
 ---
@@ -127,7 +127,7 @@ VITE_WORKER_ENDPOINT = "https://gemini-proxy.あなたのアカウント.workers
 
 ```bash
 VITE_GEMINI_API_KEY = GeminiのAPIキー
-VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： <Worker の名前>.<ランダムな文字列>.workers.dev）
+VITE_CLOUDFLARE_SUBDOMAIN = Cloudflareのサブドメイン（例： <Worker の名前（当リポジトリで言うと gemini-proxy ）>.<ランダムな文字列>.workers.dev）
 ```
 
 > [!IMPORTANT]

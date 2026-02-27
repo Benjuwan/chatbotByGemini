@@ -76,7 +76,7 @@ app.post('/api/generate', async (c) => {
       model: model,
       contents: typeof imageParts === 'undefined' ?
         prompt : [prompt, ...imageParts],
-      config: GEMINI_MODEL.includes('gemini-3') ? {
+      config: model.includes('gemini-3') ? {
         // [思考レベル | Gemini 3 からの対応](https://ai.google.dev/gemini-api/docs/gemini-3?hl=ja#thinking_level)
         thinkingConfig: {
           thinkingLevel: ThinkingLevel.LOW,
