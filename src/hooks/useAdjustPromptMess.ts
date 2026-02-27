@@ -20,7 +20,7 @@ export const useAdjustPromptMess = () => {
         }
 
         // 画像添付の有無にも応じた回答生成処理
-        const visualPrompt: Promise<string> = genAiAnswerByVisualTxt(input, thePromtMessage, imageParts);
+        const visualPrompt: string = await genAiAnswerByVisualTxt(input, thePromtMessage, imageParts);
         return visualPrompt;
     }
 

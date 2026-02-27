@@ -55,12 +55,14 @@ export const useGenAiAnswerByVisualTxt = () => {
                 console.error(data.error);
             }
 
-            return data.text ??
-                data.error ?
-                `Error Status [${data.error.status}] | リクエスト超過エラー、または不明なエラーが発生しました。時間を置いて再度お試しください。` :
-                '回答がうまく生成されなかったようです。';
-        } catch {
-            throw new Error('Google API error occurred. | `useGenAiAnswerByVisualTxt.ts`');
+            // `data.error`の有無で Gemini の回答を調整（当該プロパティが無い場合は生成回答を返す）
+            const result = data.error ?
+                `Error Status [${data.error?.status ?? "Unknown"}] | リクエスト超過エラー、または不明なエラーが発生しました。時間を置いて再度お試しください。` :
+                data.text;
+
+            return result;
+        } catch (error) {
+            throw new Error(`Google API error occurred at [useGenAiAnswerByVisualTxt.ts] | ${error}`);
         }
     };
 
