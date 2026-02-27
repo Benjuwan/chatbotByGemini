@@ -92,7 +92,7 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 - @eslint/js@9.39.3
 - @google/genai@1.43.0
 - @tailwindcss/vite@4.2.1
-- @types/node@25.3.1
+- @types/node@25.3.2
 - @types/react-dom@19.2.3
 - @types/react@19.2.14
 - @vitejs/plugin-react@5.1.4
@@ -111,8 +111,8 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.12.2
-- wrangler@4.68.1
+- hono@4.12.3
+- wrangler@4.69.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
