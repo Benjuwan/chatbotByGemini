@@ -5,7 +5,6 @@ import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { GEMINI_MODEL } from './config/theConfig';
 import { promptInjectionDetector } from './hooks/promptInjectionDetector';
 
-// 環境変数の型定義
 type Bindings = {
   GEMINI_API_KEY: string;
 };
@@ -27,10 +26,10 @@ const _checkErrorStatusType = (error: unknown): error is ErrorStatusType => {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// -------------- CAUTION | 現状はどこからでも受け付ける設定
+// CAUTION | 現状はどこからでも受け付ける設定
 app.use('/*', cors());
 
-// 許可ドメインを制御する場合は以下を有効化
+// 許可ドメインを制御する場合は以下を有効化する
 // app.use('/*', cors({
 //   origin: (origin) => {
 //     // 開発中などで origin がない場合（curlなど）や、許可リストに含まれている場合はそのオリジンを返す
@@ -58,6 +57,7 @@ app.post('/api/generate', async (c) => {
 
     const genAI = new GoogleGenAI({ apiKey: c.env.GEMINI_API_KEY });
 
+    // プロンプトインジェクション攻撃の検知関数
     const checkPromptInjection = promptInjectionDetector(prompt);
     if (checkPromptInjection.isInjection) {
       const errorMess = `不正なプロンプトを検出 | 
@@ -85,7 +85,6 @@ app.post('/api/generate', async (c) => {
     });
 
     return c.json({ text: result.text });
-
   } catch (error: unknown) {
     console.error('Worker API error:', error);
 
