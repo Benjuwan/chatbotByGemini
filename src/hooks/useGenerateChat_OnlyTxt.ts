@@ -78,8 +78,8 @@ export const useGenerateChatOnlyTxt = () => {
             };
 
             setChatHistory([...updatedChatHistory, botMessage]);
-        } catch {
-            console.error('Google API error occurred. | `useGenerateChatOnlyTxt.ts`');
+        } catch (error) {
+            console.error(`Google API error occurred at [useGenerateChatOnlyTxt.ts] | ${error}`);
         } finally {
             setLoading(false);
             setInput("");

@@ -72,11 +72,11 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
         try {
             const previews = await Promise.all(files.map(renderPreview));
             setFilePreviews(prev => [...prev, ...previews]);
-        } catch {
+        } catch (error) {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            throw new Error('ファイルの描画処理中にエラーが発生');
+            throw new Error(`ファイルの描画処理中にエラーが発生 | ${error}`);
         }
     };
 
