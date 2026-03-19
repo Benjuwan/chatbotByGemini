@@ -1,4 +1,5 @@
 # chatbot by Gemini
+
 `Gemini API`を利用したテキストと画像、PDFファイルを通じたやり取りが行えるチャットボット機能  
 [簡易的なRAG（検索拡張生成）としても扱えます](./src/chatbot/READEME.md) 
 
@@ -89,30 +90,30 @@ VITE_WORKER_ENDPOINT = https://gemini-proxy.あなたのアカウント.workers.
 > ※`useGenerateChat_OnlyTxt`はSDKの将来的な変更に備えて標準的な実装として残している意図があります。
 
 ## 技術構成（フロントエンド：`src`）
-- @eslint/js@9.39.3
-- @google/genai@1.43.0
-- @tailwindcss/vite@4.2.1
-- @types/node@25.3.2
+- @eslint/js@9.39.4
+- @google/genai@1.46.0
+- @tailwindcss/vite@4.2.2
+- @types/node@25.5.0
 - @types/react-dom@19.2.3
 - @types/react@19.2.14
-- @vitejs/plugin-react@5.1.4
+- @vitejs/plugin-react@5.2.0
 - babel-plugin-react-compiler@1.0.0
 - eslint-plugin-react-hooks@7.0.1
 - eslint-plugin-react-refresh@0.5.2
 - eslint-plugin-react@7.37.5
-- eslint@9.39.3
-- globals@17.3.0
+- eslint@9.39.4
+- globals@17.4.0
 - react-dom@19.2.4
 - react-markdown@10.1.0
 - react@19.2.4
-- tailwindcss@4.2.1
-- typescript-eslint@8.56.1
+- tailwindcss@4.2.2
+- typescript-eslint@8.57.1
 - typescript@5.9.3
 - vite@7.3.1
 
 ## 技術構成（バックエンド：`gemini-proxy`）
-- hono@4.12.3
-- wrangler@4.69.0
+- hono@4.12.8
+- wrangler@4.75.0
 
 > [!NOTE]
 > `wrangler`はCloudflare Workersの公式CLIツール。  
