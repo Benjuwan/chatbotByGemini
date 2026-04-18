@@ -76,7 +76,7 @@ export const FileUploader = ({ props }: { props: FileUploaderPropsType }) => {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            throw new Error(`ファイルの描画処理中にエラーが発生 | ${error}`);
+            throw new Error("ファイルの描画処理中にエラーが発生", { cause: error });
         }
     };
 

@@ -44,12 +44,16 @@ app.use('/*', cors());
 // `src/constance/prompt.ts`の WORKER_ENDPOINT を叩く
 app.post('/api/generate', async (c) => {
   try {
-    // リクエストボディの取得（`prompt`,`model`,`imageParts`を受け付ける）
-    const { prompt, model = GEMINI_MODEL, imageParts } = await c.req.json();
+    // リクエストボディの取得（`prompt`, `model`, `imageParts`, `temperature`を受け付ける）
+    const { prompt, model = GEMINI_MODEL, imageParts, temperature = 1 } = await c.req.json();
 
     // APIキーの確認
     if (!c.env.GEMINI_API_KEY) {
       return c.json({ error: 'API Key not configured' }, 500);
+    }
+
+    if (temperature && typeof temperature !== 'number') {
+      return c.json({ error: 'temperature must be a number' }, 500);
     }
 
     // 旧SDK： [Google GenAI SDK](https://ai.google.dev/gemini-api/docs/migrate?hl=ja) -> `import { GoogleGenerativeAI } from "@google/generative-ai";`
@@ -76,12 +80,14 @@ app.post('/api/generate', async (c) => {
       model: model,
       contents: typeof imageParts === 'undefined' ?
         prompt : [prompt, ...imageParts],
-      config: model.includes('gemini-3') ? {
+      config: {
+        // `temperature`： 創造的で多様な回答を求める場合は `2`を、事実に基づいた堅実な回答を求める場合は `0` またはそれに近い低い値を指定する。デフォルトは `1`（※Claudeなど他AIの場合は 0-1 の範囲でデフォルトは `1`）
+        temperature: temperature,
         // [思考レベル | Gemini 3 からの対応](https://ai.google.dev/gemini-api/docs/gemini-3?hl=ja#thinking_level)
-        thinkingConfig: {
+        thinkingConfig: model.includes('gemini-3') ? {
           thinkingLevel: ThinkingLevel.LOW,
-        }
-      } : undefined,
+        } : undefined
+      }
     });
 
     return c.json({ text: result.text });
